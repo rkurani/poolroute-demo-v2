@@ -207,6 +207,22 @@ tbody tr.click:hover{background:hsl(var(--muted) / .3)}
 .pooltabs{display:flex;gap:0.4rem;flex-wrap:wrap;margin:0.2rem 0 0.2rem}
 .pooltabs button{display:inline-flex;align-items:center;gap:0.4rem;border:1px solid hsl(var(--border));background:hsl(var(--card));border-radius:999px;padding:0.38rem 0.8rem;font:inherit;font-size:0.8rem;font-weight:600;cursor:pointer;color:hsl(var(--foreground))}
 .pooltabs button.on{background:hsl(var(--foreground));color:#fff;border-color:transparent}
+.prowthumb{width:4.2rem;height:3.1rem;object-fit:cover;border-radius:0.55rem;flex:none}
+.prophero{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.85fr);gap:0.8rem;margin:0.2rem 0 0.9rem}
+@media(max-width:760px){.prophero{grid-template-columns:minmax(0,1fr)}}
+.propphoto{width:100%;height:220px;object-fit:cover;border-radius:var(--r-xl);display:block;background:#e8e4dc}
+.locmap{position:relative;height:220px;overflow:hidden;border-radius:var(--r-xl);background:#e8e4dc;border:1px solid hsl(var(--border))}
+.loccap{position:absolute;left:0.5rem;bottom:0.5rem;z-index:4;background:rgb(255 255 255 / .92);border-radius:0.55rem;padding:0.35rem 0.55rem;font-size:0.72rem;font-weight:600;max-width:calc(100% - 1rem)}
+.factgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.55rem;margin-bottom:0.9rem}
+.fact{background:hsl(var(--card));border:1px solid hsl(var(--border));border-radius:var(--r-lg);padding:0.65rem 0.75rem}
+.fact b{display:block;font-size:0.92rem}
+.fact span{display:block;font-size:0.7rem;color:hsl(var(--muted-foreground));margin-bottom:0.15rem}
+td.oor{color:hsl(var(--destructive));font-weight:800;background:hsl(var(--destructive) / .08)}
+td.oow{color:hsl(38 80% 28%);font-weight:700;background:hsl(var(--accent))}
+.qbpill{display:inline-flex;align-items:center;gap:0.28rem;font-size:0.68rem;font-weight:700;padding:0.12rem 0.45rem;border-radius:999px;background:#e7f6ec;color:#166534;white-space:nowrap}
+.qbpill.wait{background:hsl(var(--muted));color:hsl(var(--muted-foreground))}
+.hwlink{cursor:pointer}
+.hwlink:hover{border-color:hsl(var(--amber))}
 @media print{
   body *{visibility:hidden}
   #printlog,#printlog *{visibility:visible}
@@ -1027,7 +1043,7 @@ const S = {
   delivery:'email', reportTab:'pool', trend:'ph',
   assignedTo:null, tourFlashed:0, tourTimer:null, newRequests:[],
   routeMode:'all', routeTech:'alex', routeChecked:[],
-  chemCust:null, chemPool:null, chemMetric:'fc', chemFilter:'all',
+  chemCust:null, chemPool:null, chemMetric:'fc', chemFilter:'all', chemPane:null,
 };
 function mapPop(which,id){ S.mapPop = which?{which,id}:{which:null,id:null}; render(); }
 const money = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -2011,7 +2027,7 @@ function vInv(){
       const hi = S.visitDone && i.cust==='foster';
       return `<div class="row${hi?' hi':''}" ${hi?'style="background:hsl(var(--accent) / .28)"':''} onclick="toast('${i.id} · ${c.name} · ${money(i.amt)} · ${i.kind==='plan'?'plan invoice, one per billing period':'one-off job invoice'}')">
         <div class="row-tile">${ic('receipt')}</div>
-        <div class="row-body"><div class="row-title">${i.id} · ${c.name} <span class="pill pill-${cls}">${i.status}</span> <span class="pill pill-n">${i.kind==='plan'?'Plan':'One-off'}</span></div>
+        <div class="row-body"><div class="row-title">${i.id} · ${c.name} <span class="pill pill-${cls}">${i.status}</span> <span class="pill pill-n">${i.kind==='plan'?'Plan':'One-off'}</span> ${qboPill(i)}</div>
         <div class="row-meta">${i.desc} · ${i.due}</div></div>
         <span class="row-amt num">${money(i.amt)}</span>
         <span class="row-act">${act} ${act?ic('chevron-right'):''}</span>
@@ -2161,16 +2177,13 @@ function chemChart(pool, metric){
 }
 function chemCsv(poolId){
   const pool = poolById(poolId), c = cust(pool.cust);
-  const lines = ['Date,Property,Pool,Free chlorine ppm,pH,Source,Status'];
-  for(let day=1; day<=CHEM_MONTH_DAYS; day++){
+  const lines = ['Date,Property,Pool,Free chlorine ppm,Total chlorine ppm,Combined chlorine ppm,pH,CYA ppm,Alkalinity ppm,Calcium ppm,TDS ppm,Temp F,Main drain visible,Flow gpm,Turnover hr,Tester,Method,Out of range'];
+  for(let day=1; day<=5; day++){
+    const row = inspectorDay(pool, day);
     const date = `2026-08-${String(day).padStart(2,'0')}`;
-    const rec = day<=5 ? officialDay(pool, day) : null;
-    if(!rec){
-      lines.push(`${date},${csvCell(c.name)},${csvCell(pool.name)},,,,${day<=5?'Missing':'Not yet'}`);
-    } else {
-      const st = chemWord(chemStatus(rec.fc, rec.ph, false));
-      lines.push(`${date},${csvCell(c.name)},${csvCell(pool.name)},${rec.fc.toFixed(2)},${rec.ph.toFixed(2)},${csvCell(sourceLabel(rec))},${st}`);
-    }
+    if(!row){ lines.push(date+','+csvCell(c.name)+','+csvCell(pool.name)+',,,,,,,,,,,,,,,Missing'); continue; }
+    const flags = Object.entries(row.bad).filter(([,v])=>v).map(([k])=>k).join(' ');
+    lines.push([date, csvCell(c.name), csvCell(pool.name), row.fc.toFixed(2), row.tc.toFixed(2), row.cc.toFixed(2), row.ph.toFixed(2), row.cya, row.ta, row.ch, row.tds, row.temp.toFixed(1), row.clarity?'Yes':'No', row.flow, row.turn, row.initials, csvCell(row.method), csvCell(flags||'none')].join(','));
   }
   return lines.join('\n');
 }
@@ -2186,6 +2199,7 @@ function exportChemCsv(poolId){
 }
 function openCommercial(custId){
   S.tab = 'commercial';
+  S.chemPane = null;
   S.chemCust = custId || null;
   if(custId){
     const w = worstPool(poolsFor(custId));
@@ -2198,6 +2212,227 @@ function setChemPool(id){ S.chemPool = id; render(); const m=document.getElement
 function setChemMetric(m){ S.chemMetric = m; render(); }
 function setChemFilter(f){ S.chemFilter = f; render(); }
 function chemBack(){ S.chemCust = null; S.chemPool = null; render(); const m=document.getElementById('main'); if(m) m.scrollTop=0; }
+
+function qboPill(i){
+  if(i.status==='Overdue') return `<span class="qbpill wait" title="Still open in QuickBooks Online"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#6b7280"/><text x="8" y="11.2" text-anchor="middle" font-size="7.5" font-family="Inter,sans-serif" font-weight="700" fill="#fff">qb</text></svg> QBO open</span>`;
+  return `<span class="qbpill" title="Reported to QuickBooks Online"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="8" fill="#2CA01C"/><text x="8" y="11.2" text-anchor="middle" font-size="7.5" font-family="Inter,sans-serif" font-weight="700" fill="#fff">qb</text></svg> Synced to QuickBooks</span>`;
+}
+/* Public-pool limits used on the log. California Title 22 (22 CCR 65529, 65533):
+   free chlorine at least 1.0 ppm, 2.0 ppm when CYA is in the water, spas 3.0 ppm;
+   pH 7.2–7.8; CYA not over 100 ppm; combined chlorine not over 0.4 ppm; the main
+   drain has to be visible; spa water not over 104°F. CDC Model Aquatic Health Code
+   keeps CYA at or under 90 ppm and the same chlorine floors. Alkalinity, calcium,
+   and TDS are the bands inspectors write down. Turnover: pool 6 h, wading 1 h, spa 0.5 h.
+   VGB drain covers and the usual CA county signage list are on the safety card.
+   Photos are Unsplash, stored in photos/. */
+const POOL_X = {
+  'hoa-main':{cya:40,cc:0.18,ta:100,ch:280,tds:1450,flow:118,turn:5.9},
+  'hoa-spa':{cya:35,cc:0.22,ta:90,ch:240,tds:1700,flow:42,turn:0.48,spa:true},
+  'swim-lap':{cya:30,cc:0.15,ta:95,ch:300,tds:1200,flow:160,turn:4.2},
+  'swim-rec':{cya:45,cc:0.2,ta:100,ch:260,tds:1500,flow:130,turn:3.6},
+  'marina-roof':{cya:40,cc:0.16,ta:90,ch:250,tds:1600,flow:90,turn:5.2},
+  'marina-kids':{cya:30,cc:0.2,ta:85,ch:200,tds:1100,flow:50,turn:0.85,wading:true},
+  'oak-north':{cya:110,cc:0.28,ta:70,ch:160,tds:2200,flow:48,turn:6.9},
+  'oak-south':{cya:50,cc:0.18,ta:100,ch:240,tds:1400,flow:55,turn:5.5},
+  'lake-lap':{cya:25,cc:0.12,ta:90,ch:320,tds:1300,flow:180,turn:4.6},
+  'lake-therapy':{cya:20,cc:0.3,ta:80,ch:200,tds:1900,flow:38,turn:0.42,spa:true},
+  'canyon-main':{cya:55,cc:0.48,ta:110,ch:290,tds:1550,flow:150,turn:6.1},
+};
+const SITES = {
+  hoa:{photo:'photos/hoa.jpg',pin:[116.2,358.3],
+    entity:'Sunset Ridge Homeowners Association', mgmt:'Pacific Coast Management',
+    mgr:'Elena Vargas', role:'Community manager', units:'186 homes',
+    bodies:'1 community pool · 1 spa', schedule:'Mon · Wed · Fri',
+    permit:'EH-24-44190', permitExp:'Mar 31, 2027',
+    work:[{id:'WO-2081',title:'Spa tile regrout',status:'Scheduled',when:'Aug 12'}],
+    docs:['Agreement AGR-443','County permit EH-24-44190','CPO card · Alex Rivera','Insurance certificate'],
+    safety:{vgb:{ok:'watch',date:'Aug 1',note:'Spa cover expires Sep 15, 2026. Replacement is on order.'}}},
+  marina:{photo:'photos/marina.jpg',pin:[158,388],
+    entity:'Marina Towers Homeowners Association', mgmt:'Harbor Management Group',
+    mgr:'Board desk', role:'Association office', units:'214 units',
+    bodies:'1 rooftop pool · 1 kids pool', schedule:'Mon · Wed · Fri',
+    permit:'EH-24-44012', permitExp:'Jan 15, 2027',
+    work:[{id:'WO-2094',title:'Kids-pool chlorine low',status:'Open',when:'Today'}],
+    docs:['Agreement AGR-447','County permit EH-24-44012','CPO card · Casey Brooks'],
+    safety:{}},
+  canyon:{photo:'photos/canyon.jpg',pin:[58,198],
+    entity:'Canyon Club Homeowners Association', mgmt:'Brentwood Estate Management',
+    mgr:'Guard desk', role:'Member services', units:'96 homes',
+    bodies:'1 members pool', schedule:'Mon · Tue · Thu · Sat',
+    permit:'EH-25-44880', permitExp:'Jun 30, 2027',
+    work:[{id:'WO-2077',title:'Combined chlorine follow-up',status:'Open',when:'Aug 6'}],
+    docs:['County permit EH-25-44880','CPO card · Morgan Ellis','Gate policy'],
+    safety:{vgb:{ok:'watch',date:'Aug 1',note:'Main drain cover expires Sep 15, 2026.'}}},
+  swim:{photo:'photos/swim.jpg',pin:[85.2,232.2],
+    entity:'Westside Swim Club', mgmt:'Club operations',
+    mgr:'Front desk', role:'Club ops', units:'420 members',
+    bodies:'1 lap pool · 1 recreation pool', schedule:'Daily',
+    permit:'EH-24-43910', permitExp:'Feb 28, 2027',
+    work:[],
+    docs:['Agreement AGR-444','County permit EH-24-43910','Lifeguard roster · August'],
+    safety:{nolg:{ok:true,date:'Aug 5',note:'Lifeguards are on duty. The no-lifeguard sign is covered during staffed hours.'}}},
+  oakwood:{photo:'photos/oakwood.jpg',pin:[150,78],
+    entity:'Oakwood Apartments', mgmt:'Greystone Residential',
+    mgr:'Leasing office', role:'Property manager', units:'148 units',
+    bodies:'2 courtyard pools', schedule:'Mon · Wed · Fri',
+    permit:'EH-24-43755', permitExp:'Nov 30, 2026',
+    work:[{id:'WO-2102',title:'North gate latch',status:'Open',when:'Aug 4'}],
+    docs:['Agreement AGR-450 (pending)','County permit EH-24-43755'],
+    safety:{gate:{ok:false,date:'Aug 4',note:'Gate does not latch. Fence is closed with a chain until the closer is replaced.'}}},
+  lakeside:{photo:'photos/lakeside.jpg',pin:[524,98],
+    entity:'Lakeside Fitness', mgmt:'Lakeside Fitness LLC',
+    mgr:'Facilities desk', role:'Facilities', units:'Club',
+    bodies:'1 lap pool · 1 therapy spa', schedule:'Daily',
+    permit:'EH-25-45102', permitExp:'Apr 30, 2027',
+    work:[],
+    docs:['County permit EH-25-45102','CPO card · Priya Shah','Spa temperature policy'],
+    safety:{}},
+};
+const SAFETY_ITEMS = [
+  ['nolg','No lifeguard on duty','Posted when the pool is unstaffed.'],
+  ['load','Maximum bather load','Occupancy number posted at the entrance.'],
+  ['e911','Emergency 911 sign','911 and the phone location, posted poolside.'],
+  ['shower','Shower before entering','Sign at the entry.'],
+  ['dive','No diving','Posted where the water is under 6 ft.'],
+  ['depth','Depth markers','Deck and waterline markers.'],
+  ['cpr','CPR sign','Rescue breathing steps posted in the pool area.'],
+  ['vgb','VGB drain cover','Cover is compliant and inside its expiration date.'],
+  ['gate','Self-closing, self-latching gate','Gate closes and latches on its own.'],
+  ['rescue','Rescue pole and ring buoy','Pole and a ring buoy with a throw rope.'],
+  ['aid','First aid kit','Stocked kit on site.'],
+  ['phone','Emergency phone','A phone that reaches 911 is at the pool.'],
+  ['cpo','CPO certificate posted','Operator card is where the inspector can see it.'],
+];
+function safetyRows(id){
+  const over = (SITES[id]&&SITES[id].safety)||{};
+  return SAFETY_ITEMS.map(([k,name,need])=>{
+    const o = over[k]||{ok:true,date:'Aug 1',note:'Checked on the last service visit.'};
+    const st = o.ok===false?'bad':o.ok==='watch'?'warn':'ok';
+    const word = o.ok===false?'Fail':o.ok==='watch'?'Due':'Pass';
+    return {name,need,st,word,date:o.date,note:o.note};
+  });
+}
+function inspectorDay(pool, day){
+  const rec = officialDay(pool, day);
+  if(!rec) return null;
+  const x = POOL_X[pool.id]||{};
+  const spa = !!x.spa, wading = !!x.wading;
+  const cc = r2(Math.max(0,(x.cc||0.2)+Math.sin(day+pool.seed)*0.04));
+  const fc = rec.fc, tc = r2(fc+cc), cya = x.cya||40;
+  const ta = Math.round((x.ta||100)+Math.sin(day)*3);
+  const ch = x.ch||250, tds = x.tds||1400;
+  const temp = r2((spa?102:81)+Math.sin(day+2)*0.6);
+  const clarity = !(pool.id==='oak-north' && day===2);
+  const flow = x.flow||80, turn = x.turn||5;
+  const who = techById(pool.tech);
+  const fcMin = spa?3:(cya>0?2:1);
+  return {fc,tc,cc,ph:rec.ph,cya,ta,ch,tds,temp,clarity,flow,turn,
+    initials:who?who.init:'—', method:rec.source==='manual'?'DPD kit':'DPD sensor', source:rec.source,
+    bad:{
+      fc: fc<fcMin||fc>10,
+      cc: cc>0.4,
+      ph: rec.ph<7.2||rec.ph>7.8,
+      cya: cya>100,
+      ta: ta<60||ta>180,
+      ch: ch<150||ch>1000,
+      tds: tds>3000,
+      temp: spa&&temp>104,
+      clarity: !clarity,
+      turn: spa?turn>0.5:(wading?turn>1:turn>6),
+    },
+    watch:{cya:cya>90&&cya<=100}
+  };
+}
+function cellNum(v, bad, watch){
+  const cls = bad?' oor':watch?' oow':'';
+  return `<td class="num${cls}">${v}</td>`;
+}
+function locMap(id, addr){
+  const site = SITES[id], M = MAPS.desktop, z = 2.3;
+  const x = site.pin[0], y = site.pin[1];
+  return `<div class="locmap">
+    <img alt="" src="${M.src}" style="position:absolute;width:${M.w*z}px;height:${M.h*z}px;max-width:none;left:calc(50% - ${x*z}px);top:calc(50% - ${y*z}px)">
+    <div class="mpin mpin--alex" style="left:50%;top:50%"></div>
+    <div class="loccap">${addr}</div>
+    <div class="osmattr">© OpenStreetMap</div>
+  </div>`;
+}
+function pumpSeries(pool){
+  const base = (POOL_X[pool.id]||{}).spa ? 5.5 : 9.5;
+  return [0,1,2,3,4,5,6].map(i=>r2(base+Math.sin(pool.seed+i)*1.1));
+}
+function psiSeries(pool){
+  const climb = pool.id==='hoa-main' || pool.id==='oak-north';
+  return Array.from({length:14},(_,i)=> r2(climb ? 13+i*0.85 : 14+Math.sin(i+pool.seed)*0.5));
+}
+function barChart(vals, labels){
+  const max = Math.max(...vals, 1), w=640, h=128, n=vals.length, gap=10;
+  const bw = (w-36)/n - gap;
+  const bars = vals.map((v,i)=>{
+    const bh = (v/max)*78, x=24+i*(bw+gap), y=96-bh;
+    return `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="4" fill="#2563eb"/>
+      <text x="${(x+bw/2).toFixed(1)}" y="112" text-anchor="middle" font-size="10" fill="#64748b">${labels[i]}</text>`;
+  }).join('');
+  return `<svg class="chemchart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Pump run time, hours">${bars}</svg>`;
+}
+function psiChart(vals){
+  const w=640,h=140,min=8,max=28;
+  const xOf=i=>28+(i/(vals.length-1))*590;
+  const yOf=v=>118-((v-min)/(max-min))*100;
+  const pts=vals.map((v,i)=>xOf(i).toFixed(1)+','+yOf(v).toFixed(1)).join(' ');
+  const base=yOf(14);
+  return `<svg class="chemchart" viewBox="0 0 ${w} ${h}" role="img" aria-label="Filter pressure, psi">
+    <line x1="28" y1="${base.toFixed(1)}" x2="618" y2="${base.toFixed(1)}" stroke="#16a34a" stroke-dasharray="4 3"/>
+    <polyline points="${pts}" fill="none" stroke="#c2410c" stroke-width="2"/>
+    <text x="28" y="134" font-size="10" fill="#64748b">Clean baseline 14 psi</text>
+    <text x="500" y="134" font-size="10" fill="#64748b">Now ${vals[vals.length-1].toFixed(1)} psi</text>
+  </svg>`;
+}
+function servicePhotoLog(){
+  const items=[['before-surface','Before'],['before-deck','Before'],['after-surface','After'],['after-wide','After']];
+  return `<div class="rphotos">${items.map(([k,tag])=>`<figure class="rph"><img src="${PHOTOS[k].src}" alt="${PHOTOS[k].cap}"><figcaption><span class="rphtag${tag==='After'?' on':''}">${tag}</span>${PHOTOS[k].cap}</figcaption></figure>`).join('')}</div>`;
+}
+function openHardware(){ S.chemPane='hardware'; render(); const m=document.getElementById('main'); if(m) m.scrollTop=0; }
+function closeHardware(){ S.chemPane=null; render(); const m=document.getElementById('main'); if(m) m.scrollTop=0; }
+function vHardware(c, pools, pool){
+  const hours = pumpSeries(pool);
+  const psi = psiSeries(pool);
+  const labels = ['Jul 30','31','Aug 1','2','3','4','5'];
+  const baseline = 14, last = psi[psi.length-1];
+  const alert = last > baseline+8;
+  const sum = r2(hours.reduce((a,b)=>a+b,0));
+  return `
+  <div class="pagehead">
+    <div>
+      <button class="btn btn-ghost" onclick="closeHardware()" style="margin-bottom:0.6rem">${ic('chevron-left')} ${c.name}</button>
+      <div class="page-title">Hardware · ${pool.name}</div>
+      <div class="page-sub">${c.addr}, ${c.city} · sensor ${pool.sensor} · LTE</div>
+    </div>
+  </div>
+  <div class="pooltabs">${pools.map(p=>`<button class="${p.id===pool.id?'on':''}" onclick="setChemPool('${p.id}');S.chemPane='hardware'">${p.name}</button>`).join('')}</div>
+  ${alert?`<div class="chemalert bad"><div>${ic('bell')}</div><div><b>Backwash the filter.</b> Pressure is ${last.toFixed(1)} psi. The clean baseline for this filter is ${baseline} psi, and it is more than 8 psi above that.</div></div>`:''}
+  <div class="statgrid" style="margin-top:0.8rem">
+    <div class="statcard"><div class="n">${sum.toFixed(1)}<span style="font-size:0.75rem;font-weight:600"> h</span></div><div class="l">Pump run time · last 7 days</div></div>
+    <div class="statcard"><div class="n">${(sum/7).toFixed(1)}<span style="font-size:0.75rem;font-weight:600"> h</span></div><div class="l">Average hours per day</div></div>
+    <div class="statcard"><div class="n">${last.toFixed(1)}<span style="font-size:0.75rem;font-weight:600"> psi</span></div><div class="l">Filter pressure · baseline ${baseline}</div></div>
+    <div class="statcard"><div class="n">${pool.latest.fc.toFixed(2)}</div><div class="l">DPD free chlorine, ppm</div></div>
+  </div>
+  <div class="card" style="padding:0.8rem 0.9rem;margin-bottom:0.8rem">
+    <div class="section-title" style="margin:0 0 0.3rem">Pump run time</div>
+    ${barChart(hours, labels)}
+  </div>
+  <div class="card" style="padding:0.8rem 0.9rem;margin-bottom:0.8rem">
+    <div class="section-title" style="margin:0 0 0.3rem">Filter pressure</div>
+    ${psiChart(psi)}
+  </div>
+  <div class="card" style="padding:0.8rem 0.9rem;margin-bottom:0.8rem">
+    <div class="section-title" style="margin:0 0 0.3rem">DPD free chlorine · LTE sensor and manual tests</div>
+    ${chemChart(pool,'fc')}
+  </div>
+  <div class="section-title">Photo log <span class="sub">same before / after photos as a residential stop</span></div>
+  ${servicePhotoLog()}`;
+}
+
 
 function vCommercial(){
   if(S.chemCust) return vChemDetail();
@@ -2234,7 +2469,7 @@ function vCommercial(){
       const w = p.worst;
       const kind = p.c.type==='hoa'?'HOA':'Commercial';
       return `<div class="row" data-cust="${p.id}" data-status="${w.status}" onclick="openCommercial('${p.id}')">
-        <div class="row-tile"><span class="cdot ${w.status[0]}"></span></div>
+        <img class="prowthumb" src="${SITES[p.id].photo}" alt="">
         <div class="row-body">
           <div class="row-title">${p.c.name} <span class="pill pill-n">${kind}</span> <span class="pill pill-${chemPill(w.status)}">${chemWord(w.status)}</span></div>
           <div class="row-meta">${p.c.city} · ${p.pools.length} pool${p.pools.length>1?'s':''} · ${w.name} ${w.latest.fc.toFixed(2)} ppm · pH ${w.latest.ph.toFixed(2)} · ${w.daysLogged}/${CHEM_MONTH_DAYS} days logged</div>
@@ -2249,6 +2484,10 @@ function vChemDetail(){
   const c = cust(S.chemCust);
   const pools = poolsFor(c.id);
   const pool = poolById(S.chemPool) || pools[0];
+  if(S.chemPane==='hardware') return vHardware(c, pools, pool);
+  const site = SITES[c.id];
+  const checks = safetyRows(c.id);
+  const fails = checks.filter(s=>s.st!=='ok').length;
   const metric = S.chemMetric==='ph'?'ph':'fc';
   const recent = pool.readings.filter(r=>r.source==='manual').concat(pool.readings.filter(r=>r.source==='sensor').slice(-8))
     .sort((a,b)=> (b.day-a.day) || (b.hour-a.hour) || (b.min-a.min)).slice(0, 16);
@@ -2264,15 +2503,26 @@ function vChemDetail(){
       ${tech?tech.name+' is the tech on this body of water.':''}</div>
     </div>` : '';
   const logRows = [];
-  for(let day=1; day<=CHEM_MONTH_DAYS; day++){
-    const rec = day<=5 ? officialDay(pool, day) : null;
-    const st = rec ? chemStatus(rec.fc, rec.ph, false) : null;
+  for(let day=1; day<=5; day++){
+    const row = inspectorDay(pool, day);
+    if(!row){ logRows.push(`<tr><td class="num">Aug ${day}</td><td colspan="14" class="oor">Missing</td></tr>`); continue; }
+    const b=row.bad, w=row.watch;
     logRows.push(`<tr>
       <td class="num">Aug ${day}</td>
-      <td class="num">${rec?rec.fc.toFixed(2):'—'}</td>
-      <td class="num">${rec?rec.ph.toFixed(2):'—'}</td>
-      <td>${rec?`<span class="srcpill ${rec.source}">${sourceLabel(rec)}</span>`:(day<=5?'<span class="pill pill-bad">Missing</span>':'<span class="sub">—</span>')}</td>
-      <td>${rec?`<span class="pill pill-${chemPill(st)}">${chemWord(st)}</span>`:'<span class="sub">—</span>'}</td>
+      ${cellNum(row.fc.toFixed(2), b.fc)}
+      ${cellNum(row.tc.toFixed(2), b.fc)}
+      ${cellNum(row.cc.toFixed(2), b.cc)}
+      ${cellNum(row.ph.toFixed(2), b.ph)}
+      ${cellNum(row.cya, b.cya, w.cya)}
+      ${cellNum(row.ta, b.ta)}
+      ${cellNum(row.ch, b.ch)}
+      ${cellNum(row.tds.toLocaleString(), b.tds)}
+      ${cellNum(row.temp.toFixed(0), b.temp)}
+      ${cellNum(row.clarity?'Yes':'No', b.clarity)}
+      ${cellNum(row.flow, false)}
+      ${cellNum(row.turn.toFixed(2), b.turn)}
+      <td>${row.initials}</td>
+      <td><span class="srcpill ${row.source}">${row.method}</span></td>
     </tr>`);
   }
   return `
@@ -2286,6 +2536,20 @@ function vChemDetail(){
       <button class="btn btn-ghost" onclick="window.print()">${ic('file-text')} Print log</button>
       <button class="btn btn-ghost" onclick="exportChemCsv('${pool.id}')">${ic('download')} Export CSV</button>
     </div>
+  </div>
+  <div class="prophero">
+    <img class="propphoto" src="${site.photo}" alt="Photo of ${c.name}">
+    ${locMap(c.id, c.addr+', '+c.city)}
+  </div>
+  <div class="factgrid">
+    <div class="fact"><span>Entity</span><b>${site.entity}</b></div>
+    <div class="fact"><span>Management</span><b>${site.mgmt}</b></div>
+    <div class="fact"><span>Contact</span><b>${site.mgr}</b><span style="margin:0.2rem 0 0">${site.role} · ${c.phone}</span></div>
+    <div class="fact"><span>Size</span><b>${site.units}</b></div>
+    <div class="fact"><span>Bodies of water</span><b>${site.bodies}</b></div>
+    <div class="fact"><span>Service</span><b>${site.schedule}</b></div>
+    <div class="fact"><span>Health permit</span><b>${site.permit}</b><span style="margin:0.2rem 0 0">Expires ${site.permitExp}</span></div>
+    <div class="fact"><span>Safety</span><b>${checks.length-fails} / ${checks.length} pass</b></div>
   </div>
   <div class="pooltabs">
     ${pools.map(p=>`<button class="${p.id===pool.id?'on':''}" onclick="setChemPool('${p.id}')"><span class="cdot ${p.status[0]}"></span> ${p.name}</button>`).join('')}
@@ -2332,19 +2596,50 @@ function vChemDetail(){
       <div style="padding:0.8rem 1rem;border-bottom:1px solid hsl(var(--border));font-size:0.82rem;line-height:1.5">
         <b>Pacific Pool Care</b> · daily chemistry log<br>
         <span class="sub">${c.name} · ${pool.name}${pool.spa?' (spa)':''} · ${c.addr}, ${c.city}<br>
-        Limits: free chlorine ${CHEM_LIMITS.fcLow.toFixed(1)}–${CHEM_LIMITS.fcHigh.toFixed(1)} ppm in range, floor ${CHEM_LIMITS.fcFloor.toFixed(1)} ppm · pH ${CHEM_LIMITS.phLow.toFixed(1)}–${CHEM_LIMITS.phHigh.toFixed(1)}. One row per day. A manual DPD test is the record of the day when the tech visited; otherwise the log uses the sensor reading nearest noon. Fictional sample.</span>
+        California Title 22: free chlorine at least 1.0 ppm, or 2.0 ppm when CYA is present, spas 3.0 ppm · pH 7.2–7.8 · CYA not over 100 ppm (CDC MAHC holds CYA to 90) · combined chlorine not over 0.4 ppm · main drain visible · spa not over 104°F. Turnover target is 6 h for a pool, 1 h for a wading pool, 30 min for a spa. Alkalinity 60–180, calcium 150–1,000, and TDS under 3,000 are the bands inspectors write down. Highlighted cells are outside those limits. A manual DPD test is the row when the tech visited; otherwise the sensor reading nearest noon. Fictional sample for August 1–5.</span>
       </div>
       <table>
-        <thead><tr><th>Day</th><th class="right">Free Cl ppm</th><th class="right">pH</th><th>Source</th><th>Status</th></tr></thead>
+        <thead><tr>
+          <th>Day</th><th class="right" title="Free chlorine, ppm">FC</th><th class="right" title="Total chlorine, ppm">TC</th><th class="right" title="Combined chlorine, ppm">CC</th>
+          <th class="right">pH</th><th class="right" title="Cyanuric acid, ppm. CA max 100, CDC MAHC max 90">CYA</th>
+          <th class="right" title="Total alkalinity, ppm">TA</th><th class="right" title="Calcium hardness, ppm">CH</th><th class="right">TDS</th>
+          <th class="right" title="Water temperature, °F">°F</th><th title="Main drain visible">Drain</th>
+          <th class="right" title="Flow, gallons per minute">gpm</th><th class="right" title="Turnover, hours">Turn</th>
+          <th>By</th><th>Method</th>
+        </tr></thead>
         <tbody>${logRows.join('')}</tbody>
       </table>
     </div>
+  </div>
+  <div class="section-title">Safety <span class="sub">${fails?fails+' item'+(fails>1?'s':'')+' need attention':'all posted items passed'} · last visits in August</span></div>
+  <div class="card rows" style="margin-bottom:0.9rem">
+    ${checks.map(s=>`<div class="row" onclick="toast('${s.name}: ${s.word}. ${s.note}')">
+      <div class="row-body"><div class="row-title">${s.name} <span class="pill pill-${s.st}">${s.word}</span></div>
+      <div class="row-meta">${s.need} · checked ${s.date} · ${s.note}</div></div>
+    </div>`).join('')}
+  </div>
+  <div class="section-title">Hardware</div>
+  <div class="card hwlink" style="padding:0.9rem 1rem;margin-bottom:0.9rem" onclick="openHardware()">
+    <div class="row-title">Pump, filter, and sensor ${ic('chevron-right')}</div>
+    <div class="row-meta" style="margin-top:0.25rem">${pool.name} · run time, filter pressure, DPD readings, and the visit photo log</div>
+  </div>
+  <div class="section-title">Open work</div>
+  <div class="card rows" style="margin-bottom:0.9rem">
+    ${site.work.length?site.work.map(w=>`<div class="row" onclick="toast('${w.id} · ${w.title} · ${w.status}')">
+      <div class="row-tile">${ic('wrench')}</div>
+      <div class="row-body"><div class="row-title">${w.id} · ${w.title} <span class="pill pill-${w.status==='Open'?'bad':'info'}">${w.status}</span></div>
+      <div class="row-meta">${w.when}</div></div>
+    </div>`).join(''):`<div class="row"><div class="row-body"><div class="row-title">No open work orders</div></div></div>`}
+  </div>
+  <div class="section-title">Documents</div>
+  <div class="card rows" style="margin-bottom:0.9rem">
+    ${site.docs.map(d=>`<div class="row" onclick="toast('${d}')"><div class="row-tile">${ic('file-text')}</div><div class="row-body"><div class="row-title">${d}</div></div></div>`).join('')}
   </div>
   <div class="section-title">Billing for this property</div>
   <div class="card rows" style="margin-bottom:0.7rem">
     ${invs.length?invs.map(i=>`<div class="row" onclick="go('invoices');toast('${i.id} · ${c.name} · ${money(i.amt)}')">
       <div class="row-tile">${ic('receipt')}</div>
-      <div class="row-body"><div class="row-title">${i.id} <span class="pill pill-${i.status==='Paid'?'ok':i.status==='Overdue'?'bad':'info'}">${i.status}</span></div>
+      <div class="row-body"><div class="row-title">${i.id} <span class="pill pill-${i.status==='Paid'?'ok':i.status==='Overdue'?'bad':'info'}">${i.status}</span> ${qboPill(i)}</div>
       <div class="row-meta">${i.desc} · ${i.due}</div></div>
       <span class="row-amt num">${money(i.amt)}</span>
       <span class="row-act">Invoices ${ic('chevron-right')}</span>

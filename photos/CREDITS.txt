@@ -1,0 +1,2 @@
+Property photos are from Unsplash (https://unsplash.com/license) and stored here so the demo does not depend on a third-party image host.
+hoa.jpg marina.jpg canyon.jpg swim.jpg oakwood.jpg lakeside.jpg
