@@ -616,22 +616,32 @@ tbody tr.click:hover{background:hsl(var(--muted) / .3)}
    right. An earlier cut of this rendered a real site snapshot and had to scale
    a 1040px page down to fit. This one is authored at the dock's own width, so
    there is no scaling and nothing to squint at. */
-.sitedock{position:fixed;right:1.25rem;top:4.7rem;bottom:1.25rem;width:min(40rem,52vw);z-index:55;
-  display:flex;flex-direction:column;gap:0.5rem;animation:dockin .3s cubic-bezier(.2,.8,.3,1) both;transform-origin:top right}
+/* The site sits on a dim layer so the queue stays in place and a click
+   outside the panel (or Esc, or the X) puts it away. */
+.siteback{position:fixed;inset:0;z-index:60;background:rgb(15 23 42 / .45);
+  display:flex;justify-content:flex-end;padding:4.7rem 1.25rem 1.25rem}
+.sitedock{position:relative;width:min(40rem,100%);height:100%;display:flex;flex-direction:column;gap:0.5rem;
+  animation:dockin .3s cubic-bezier(.2,.8,.3,1) both;transform-origin:top right}
 .shellmain.sitedocked .wrap{max-width:none;padding-right:calc(min(40rem,52vw) + 2rem)}
-.shellmain.sitedocked .chgrid{display:none}
-.sitebar{display:flex;align-items:center;gap:0.6rem;color:hsl(var(--sfg));flex:none}
-.urlpill{display:inline-flex;align-items:center;gap:0.32rem;background:hsl(var(--sbg));color:hsl(var(--sfg));
-  border-radius:99px;padding:0.26rem 0.7rem;font-size:0.72rem;font-weight:600}
+.sitebar{display:flex;align-items:center;gap:0.6rem;background:hsl(var(--sbg));color:#fff;
+  border-radius:0.7rem;padding:0.4rem 0.45rem 0.4rem 0.75rem;flex:none;
+  box-shadow:0 8px 24px rgb(15 23 42 / .28)}
+.urlpill{display:inline-flex;align-items:center;gap:0.32rem;background:rgb(255 255 255 / .1);color:#fff;
+  border-radius:99px;padding:0.26rem 0.7rem;font-size:0.72rem;font-weight:600;min-width:0;overflow:hidden;white-space:nowrap}
 .urlpill svg{width:0.72rem;height:0.72rem;opacity:.75}
-.sitenote{font-size:0.74rem;color:hsl(var(--muted-foreground))}
+.sitenote{font-size:0.74rem;color:rgb(255 255 255 / .7);min-width:0}
+.sitebar .dx{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;gap:0.2rem;
+  height:2.1rem;padding:0 0.7rem;border-radius:0.5rem;color:#fff;background:rgb(255 255 255 / .14);flex:none;
+  font-size:0.78rem;font-weight:700}
+.sitebar .dx svg{width:1rem;height:1rem}
+.sitebar .dx:hover{background:rgb(255 255 255 / .26)}
 .sitewin{position:relative;flex:1;min-height:0;border-radius:0.8rem;overflow:hidden;background:#fff;
   box-shadow:0 18px 50px rgb(15 23 42 / .32);border:1px solid hsl(var(--border))}
 .sitefr{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
 @media (max-width:1180px){
-  .sitedock{left:1.25rem;width:auto}
+  .siteback{padding:4.4rem 0.65rem 0.65rem}
+  .sitedock{width:100%}
   .shellmain.sitedocked .wrap{padding-right:0.9rem}
-  /* Full-width now, so there is no queue beside it to point at. */
   .sitenote{display:none}
 }
 
@@ -1640,6 +1650,7 @@ function render(){
   renderTour();
 }
 function go(tab){
+  if(tab !== 'requests') S.siteOpen = false;
   S.tab = tab;
   if(S.tour===8 && tab==='requests') S.tour=9;
   if(S.phoneOpen && S.phone.screen === 'report') closePhone();
@@ -2872,18 +2883,21 @@ function openSite(){
   render();
 }
 function closeSite(){ S.siteOpen = false; render(); }
+addEventListener('keydown', e => { if(e.key === 'Escape' && S.siteOpen) closeSite(); });
 
 function renderSiteDock(){
   const el = document.getElementById('sitedock');
   document.querySelector('.shellmain').classList.toggle('sitedocked', !!S.siteOpen);
   if(!S.siteOpen){ el.innerHTML = ''; return; }
-  el.innerHTML = `<div class="sitedock">
-    <div class="sitebar">
-      <span class="urlpill">${ic('lock')} pacificpoolcare.com/request-service</span>
-      <span class="sitenote">The operator's own site. Watch the queue on the left.</span>
-      <button class="dx" style="margin-left:auto" onclick="closeSite()" aria-label="Close the site">${ic('x')}</button>
+  el.innerHTML = `<div class="siteback" onclick="if(event.target===this)closeSite()">
+    <div class="sitedock" role="dialog" aria-modal="true" aria-label="Web request form">
+      <div class="sitebar">
+        <span class="urlpill">${ic('lock')} pacificpoolcare.com/request-service</span>
+        <span class="sitenote">The operator's own site. Watch the queue on the left.</span>
+        <button class="dx" type="button" onclick="closeSite()" aria-label="Close the web form">${ic('x')} Close</button>
+      </div>
+      <div class="sitewin"><iframe class="sitefr" id="sitefr" title="pacificpoolcare.com"></iframe></div>
     </div>
-    <div class="sitewin"><iframe class="sitefr" id="sitefr" title="pacificpoolcare.com"></iframe></div>
   </div>`;
   const fr = document.getElementById('sitefr');
   if(fr && !fr.srcdoc) fr.srcdoc = SITE_HTML;
