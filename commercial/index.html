@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PoolRoute Ops · Commercial &amp; Multifamily</title>
+<meta name="description" content="Every commercial pool, monitored and serviced from one dashboard. True free-chlorine readings by DPD over LTE, automatic health-department logs, and one view across your portfolio.">
+<meta property="og:title" content="PoolRoute Ops · Commercial &amp; Multifamily">
+<meta property="og:description" content="Every commercial pool, monitored and serviced from one dashboard.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PoolRoute Ops">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231C1C1E'/%3E%3Ctext x='8' y='24' font-family='Inter,Helvetica,Arial,sans-serif' font-weight='800' font-size='22' fill='%23F59E0B'%3EP%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f8f7f5; --ink:#1c1c1e; --ink2:#3a3a3e; --muted:#69717f; --line:#e7e4df; --card:#fff;
+  --amber:#f59e0b; --amber-d:#b45309; --amber-bg:#fef3dc;
+  --green:#16a34a; --green-bg:#e7f6ec; --yellow:#d4a106; --yellow-bg:#fdf6d8; --red:#dc2626; --red-bg:#fde8e8;
+  --dark:#1c1c1e; --dark2:#28282c; --dark-line:#38383d;
+  --r:12px; --r-lg:16px;
+  --shadow:0 1px 2px rgb(15 23 42/.06),0 10px 30px rgb(15 23 42/.06);
+  --f:'Inter',system-ui,-apple-system,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+@media (max-width:640px){.wrap{padding:0 16px}}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--amber-d)}
+.sample{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:#efede9;border:1px solid var(--line);border-radius:999px;padding:2px 8px;white-space:nowrap}
+h1{font-size:clamp(34px,5.2vw,58px);line-height:1.04;letter-spacing:-.035em;font-weight:800}
+h2{font-size:clamp(26px,3.4vw,38px);line-height:1.12;letter-spacing:-.025em;font-weight:800}
+h3{font-size:18px;line-height:1.3;font-weight:700;letter-spacing:-.01em}
+.lead{font-size:clamp(17px,1.6vw,19px);color:var(--ink2);max-width:640px}
+.sub{color:var(--muted);font-size:15px}
+section{padding:88px 0}
+@media (max-width:640px){section{padding:60px 0}}
+.sec-head{max-width:720px;margin-bottom:40px}
+.sec-head h2{margin:10px 0 14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 15px/1 var(--f);padding:14px 20px;border-radius:10px;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .15s,background .15s;min-height:46px}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--ink);color:#fff}
+.btn-primary:hover{background:#000}
+.btn-ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+.btn-ghost:hover{border-color:#cfcac2}
+.btn-amber{background:var(--amber);color:var(--ink)}
+.btn-amber:hover{background:#fbb02a}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:20;background:rgb(248 247 245/.88);backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:62px;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;text-decoration:none;font-size:17px}
+.brand .mark{width:30px;height:30px;border-radius:7px;background:var(--dark);color:var(--amber);display:grid;place-items:center;font-weight:800;font-size:19px;line-height:1}
+.brand small{font-weight:600;color:var(--muted);font-size:13px;letter-spacing:0}
+.nav-links{display:flex;gap:22px;font-size:14px;font-weight:500;color:var(--ink2)}
+.nav-links a{text-decoration:none}
+.nav-links a:hover{color:var(--ink)}
+.nav .btn{padding:10px 14px;min-height:40px;font-size:14px}
+@media (max-width:900px){.nav-links{display:none}}
+@media (max-width:420px){.brand small{display:none}}
+
+/* hero */
+.hero{padding:72px 0 64px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:56px;align-items:center}
+.hero h1{margin:16px 0 20px}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.hero .fine{margin-top:18px;font-size:14px;color:var(--muted)}
+@media (max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr);gap:40px}.hero{padding:44px 0 40px}}
+.hero-board{background:var(--dark);color:#f4f3f0;border-radius:var(--r-lg);padding:20px;box-shadow:0 20px 60px rgb(15 23 42/.22)}
+.hb-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px}
+.hb-top b{font-size:14px}
+.hb-top .sample{background:var(--dark2);border-color:var(--dark-line);color:#a6a6ad}
+.hb-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.hb-stat{background:var(--dark2);border:1px solid var(--dark-line);border-radius:10px;padding:12px}
+.hb-stat .n{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.hb-stat .l{font-size:12px;color:#a6a6ad;margin-top:6px}
+.hb-row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-top:1px solid var(--dark-line);font-size:14px}
+.hb-row .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hb-row .v{font-family:var(--mono);font-size:13px;color:#d6d5d1}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.dot.g{background:var(--green)}.dot.y{background:#eab308}.dot.r{background:var(--red);box-shadow:0 0 0 0 rgb(220 38 38/.6);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgb(220 38 38/.55)}70%{box-shadow:0 0 0 9px rgb(220 38 38/0)}100%{box-shadow:0 0 0 0 rgb(220 38 38/0)}}
+
+/* problem */
+.problem{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.prob-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.prob{border:1px solid var(--line);border-radius:var(--r);padding:22px;background:var(--bg)}
+.prob .k{font-family:var(--mono);font-size:12px;color:var(--amber-d);font-weight:600}
+.prob h3{margin:8px 0 8px}
+.prob p{color:var(--ink2);font-size:15px}
+.coverage{margin-top:22px;border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;background:#fff}
+.coverage .lbl{font-weight:700;font-size:14px;margin-right:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:14px;background:var(--bg)}
+.chip.ok::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green)}
+.chip.gap{border-color:#f3c3c3;background:var(--red-bg);color:#991b1b;font-weight:600}
+.chip.gap::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--red)}
+@media (max-width:900px){.prob-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* DPD */
+.dpd-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:start}
+@media (max-width:900px){.dpd-grid{grid-template-columns:minmax(0,1fr);gap:32px}}
+.feat-list{list-style:none;display:grid;gap:16px;margin-top:8px}
+.feat-list li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:14px}
+.feat-list .ic{width:34px;height:34px;border-radius:9px;background:var(--amber-bg);color:var(--amber-d);display:grid;place-items:center}
+.feat-list b{display:block;font-size:16px}
+.feat-list span{color:var(--ink2);font-size:15px}
+.vs{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;font-size:14px;background:#fff}
+.vs div{padding:14px 16px}
+.vs .h{font-weight:700;background:var(--bg);border-bottom:1px solid var(--line)}
+.vs .h.us{background:var(--dark);color:#fff}
+.vs div:nth-child(odd){border-right:1px solid var(--line)}
+.vs .row{border-bottom:1px solid var(--line)}
+.vs .row.last{border-bottom:0}
+
+.live{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
+.live-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line);gap:10px}
+.live-head .site{font-weight:700;font-size:15px}
+.live-head .meta{font-size:12px;color:var(--muted)}
+.lte{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink2)}
+.bars{display:inline-flex;align-items:flex-end;gap:2px;height:12px}
+.bars i{width:3px;background:var(--green);border-radius:1px}
+.live-body{padding:20px 18px 8px}
+.fc-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.fc-l{font-size:13px;color:var(--muted);font-weight:600}
+.fc-v{font-size:64px;font-weight:800;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
+.fc-v small{font-size:20px;font-weight:600;color:var(--muted);letter-spacing:0;margin-left:4px}
+.status{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:13px;padding:6px 11px;border-radius:999px}
+.status.g{background:var(--green-bg);color:#166534}.status.y{background:var(--yellow-bg);color:#854d0e}.status.r{background:var(--red-bg);color:#991b1b}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 12px}
+.mini div{background:var(--bg);border-radius:10px;padding:10px 12px}
+.mini b{display:block;font-size:18px;font-variant-numeric:tabular-nums}
+.mini span{font-size:12px;color:var(--muted)}
+.spark{width:100%;height:84px;display:block}
+.spark-cap{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:2px}
+.alert{margin:14px 18px 0;border-radius:10px;padding:12px 14px;font-size:14px;display:none;gap:10px;align-items:flex-start}
+.alert.show{display:flex}
+.alert.r{background:var(--red-bg);color:#7f1d1d}
+.alert.g{background:var(--green-bg);color:#14532d}
+.alert b{display:block}
+.log{margin:16px 18px 18px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.log-h{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--bg);font-size:12px;font-weight:700;color:var(--ink2);gap:8px}
+.log table{width:100%;border-collapse:collapse;font-size:13px}
+.log td{padding:8px 12px;border-top:1px solid var(--line);font-variant-numeric:tabular-nums}
+.log td:last-child{text-align:right;color:var(--muted)}
+.log tr.new td{animation:flash 1.4s ease}
+@keyframes flash{0%{background:var(--amber-bg)}100%{background:transparent}}
+.live-foot{display:flex;justify-content:space-between;padding:10px 18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);gap:10px;flex-wrap:wrap}
+
+.activate{margin-top:20px;background:var(--dark);color:#f4f3f0;border-radius:var(--r-lg);padding:20px}
+.activate h3{color:#fff;font-size:16px}
+.activate p{font-size:14px;color:#b3b2b8;margin:4px 0 14px}
+.act-form{display:flex;gap:10px;flex-wrap:wrap}
+.act-form input{flex:1 1 200px;min-width:0;background:var(--dark2);border:1px solid var(--dark-line);color:#fff;border-radius:10px;padding:12px 14px;font:600 18px/1 var(--mono);letter-spacing:.12em}
+.act-form input::placeholder{color:#6d6d74;letter-spacing:.12em}
+.act-form input:focus{outline:2px solid var(--amber);outline-offset:1px}
+.act-steps{list-style:none;margin-top:14px;display:grid;gap:8px;font-size:14px}
+.act-steps li{display:flex;align-items:center;gap:10px;color:#8e8d94;transition:color .3s}
+.act-steps li i{width:18px;height:18px;border-radius:50%;border:2px solid #4a4a50;flex:none;display:grid;place-items:center;font-style:normal;font-size:11px}
+.act-steps li.done{color:#f4f3f0}
+.act-steps li.done i{border-color:var(--green);background:var(--green);color:#fff}
+.act-steps li.run i{border-color:var(--amber);border-top-color:transparent;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.act-err{color:#fca5a5;font-size:13px;margin-top:8px;min-height:18px}
+
+/* journey */
+.journey{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;position:relative;margin-bottom:22px}
+.step{position:relative;background:none;border:0;font:inherit;color:inherit;text-align:left;cursor:pointer;padding:0 10px 0 0}
+.step .box{border:1px solid var(--line);border-radius:var(--r);padding:16px 14px;background:var(--bg);transition:all .2s;height:100%}
+.step:hover .box{border-color:#cfcac2}
+.step.on .box{background:var(--dark);color:#fff;border-color:var(--dark);box-shadow:0 12px 30px rgb(15 23 42/.18)}
+.step .num{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--amber-d)}
+.step.on .num{color:var(--amber)}
+.step b{display:block;font-size:15px;margin:6px 0 3px;line-height:1.25}
+.step span{font-size:13px;color:var(--muted)}
+.step.on span{color:#b3b2b8}
+.step:not(:last-child)::after{content:"";position:absolute;right:-1px;top:50%;width:10px;height:2px;background:#cfcac2}
+.step:focus-visible .box{outline:2px solid var(--amber);outline-offset:2px}
+.panel{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--bg);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);overflow:hidden;min-height:300px}
+.panel-txt{padding:28px}
+.panel-txt .who{font-size:13px;font-weight:600;color:var(--amber-d);text-transform:uppercase;letter-spacing:.06em}
+.panel-txt h3{font-size:22px;margin:8px 0 12px}
+.panel-txt ul{list-style:none;display:grid;gap:10px;margin-top:14px}
+.panel-txt li{padding-left:22px;position:relative;font-size:15px;color:var(--ink2)}
+.panel-txt li::before{content:"";position:absolute;left:2px;top:9px;width:8px;height:8px;border-radius:2px;background:var(--amber)}
+.panel-txt .hand{margin-top:18px;font-size:14px;color:var(--muted);border-top:1px dashed var(--line);padding-top:14px}
+.panel-viz{background:#fff;border-left:1px solid var(--line);padding:22px;display:flex;align-items:center;justify-content:center}
+.mock{width:100%;max-width:380px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow);overflow:hidden;font-size:13px}
+.mock-h{background:var(--dark);color:#fff;padding:10px 12px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mock-h .sample{background:var(--dark2);border-color:var(--dark-line);color:#a6a6ad}
+.mock-b{padding:12px}
+.mrow{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.mrow:last-child{border-bottom:0}
+.mrow span{color:var(--muted)}
+.mrow b{font-variant-numeric:tabular-nums;text-align:right}
+.mbtn{margin-top:10px;background:var(--amber);border-radius:8px;text-align:center;padding:9px;font-weight:700}
+.mtag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px;background:var(--green-bg);color:#166534}
+.mtag.y{background:var(--yellow-bg);color:#854d0e}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.photos div{aspect-ratio:1;border-radius:6px;background:linear-gradient(135deg,#8fd3e8,#2b8fb3);position:relative}
+.photos div::after{content:"GPS ✓";position:absolute;bottom:4px;left:4px;font-size:9px;font-weight:700;color:#fff;background:rgb(0 0 0/.35);padding:1px 4px;border-radius:3px}
+@media (max-width:900px){
+  .flow{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(170px,1fr);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+  .step{scroll-snap-align:start}
+  .panel{grid-template-columns:minmax(0,1fr)}
+  .panel-viz{border-left:0;border-top:1px solid var(--line)}
+  .panel-txt{padding:22px}
+}
+
+/* portfolio map */
+.map-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;align-items:stretch}
+@media (max-width:900px){.map-grid{grid-template-columns:minmax(0,1fr)}}
+.map-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow)}
+.map-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);gap:10px;flex-wrap:wrap}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{font:600 13px/1 var(--f);border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:34px;color:var(--ink)}
+.filters button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.map-svg{display:block;width:100%;height:auto;background:#eef2ee}
+.pin{cursor:pointer;transition:opacity .2s}
+.pin circle.c{stroke:#fff;stroke-width:3}
+.pin.dim{opacity:.15;pointer-events:none}
+.pin.sel circle.ring{stroke:var(--ink);stroke-width:3;fill:none}
+.pin:focus{outline:none}
+.pin:focus-visible circle.ring{stroke:var(--amber);stroke-width:4;fill:none}
+.ring-r{animation:ringp 1.8s infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ringp{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(2.4)}}
+.detail{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow)}
+.detail .nm{font-size:18px;font-weight:700;line-height:1.25}
+.detail .ty{font-size:13px;color:var(--muted)}
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.det-grid div{background:var(--bg);border-radius:10px;padding:10px 12px}
+.det-grid b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.det-grid span{font-size:12px;color:var(--muted)}
+.det-note{font-size:14px;color:var(--ink2);border-left:3px solid var(--amber);padding:2px 0 2px 12px}
+.det-list{list-style:none;font-size:13px;display:grid;gap:6px;color:var(--ink2)}
+.det-list li{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.det-list li span:last-child{color:var(--muted);text-align:right}
+
+/* audiences */
+.aud-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media (max-width:900px){.aud-grid{grid-template-columns:minmax(0,1fr)}}
+.aud{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;display:flex;flex-direction:column}
+.aud .ic{width:44px;height:44px;border-radius:11px;background:var(--dark);color:var(--amber);display:grid;place-items:center;margin-bottom:16px}
+.aud h3{font-size:20px;margin-bottom:6px}
+.aud p{color:var(--muted);font-size:15px}
+.aud ul{list-style:none;margin-top:16px;display:grid;gap:10px}
+.aud li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;font-size:15px;color:var(--ink2)}
+.aud li svg{margin-top:3px;color:var(--green)}
+
+/* integrations */
+.integ{background:var(--dark);color:#f4f3f0}
+.integ .sec-head h2{color:#fff}
+.integ .lead{color:#c4c3c9}
+.integ .tag{color:var(--amber)}
+.int-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:40px;align-items:start}
+@media (max-width:900px){.int-grid{grid-template-columns:minmax(0,1fr)}}
+.int-list{display:grid;gap:12px}
+.int-item{border:1px solid var(--dark-line);background:var(--dark2);border-radius:var(--r);padding:16px 18px}
+.int-item b{display:block;color:#fff;font-size:16px;margin-bottom:3px}
+.int-item span{font-size:14px;color:#b3b2b8}
+.code{background:#111113;border:1px solid var(--dark-line);border-radius:var(--r-lg);overflow:hidden}
+.code-h{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--dark-line);font-size:12px;color:#a6a6ad;gap:8px}
+.code-h .sample{background:var(--dark2);border-color:var(--dark-line);color:#a6a6ad}
+.code pre{margin:0;padding:16px;font:500 13px/1.6 var(--mono);color:#e4e3df;overflow-x:auto;white-space:pre}
+.code .k{color:#fbbf24}.code .s{color:#86efac}.code .n{color:#93c5fd}.code .c{color:#6d6d74}
+.stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.stack span{border:1px solid var(--dark-line);border-radius:999px;padding:6px 12px;font-size:13px;color:#d6d5d1}
+
+/* proof */
+.proof-card{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:40px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:40px;align-items:center;box-shadow:var(--shadow)}
+.proof-card .big{font-size:clamp(28px,3.6vw,42px);font-weight:800;letter-spacing:-.03em;line-height:1.1}
+.proof-card .big em{font-style:normal;color:var(--amber-d)}
+.switch{background:var(--amber-bg);border:1px solid #f6d79a;border-radius:var(--r);padding:22px}
+.switch b{display:block;font-size:19px;margin-bottom:6px;letter-spacing:-.01em}
+.switch p{font-size:15px;color:var(--ink2)}
+.switch ol{margin:12px 0 0 18px;font-size:14px;color:var(--ink2);display:grid;gap:4px}
+@media (max-width:900px){.proof-card{grid-template-columns:minmax(0,1fr);padding:24px;gap:24px}}
+
+/* pricing + cta */
+.price{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;border:1px solid var(--line);border-radius:var(--r-lg);padding:30px;background:#fff}
+.price h3{font-size:24px}
+.price p{color:var(--muted);margin-top:6px}
+@media (max-width:700px){.price{grid-template-columns:minmax(0,1fr)}}
+.cta{background:var(--dark);color:#fff;border-radius:22px;padding:56px 40px;text-align:center}
+.cta h2{color:#fff;max-width:700px;margin:0 auto 14px}
+.cta p{color:#b3b2b8;max-width:560px;margin:0 auto 28px}
+.cta .ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta .btn-ghost{background:transparent;color:#fff;border-color:#4a4a50}
+@media (max-width:640px){.cta{padding:40px 20px;border-radius:16px}}
+footer{padding:36px 0 48px;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+footer a{text-decoration:none;color:var(--ink2)}
+
+/* one-pager (screen preview) */
+.op-wrap{display:flex;flex-direction:column;align-items:center;gap:18px}
+.op-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.onepager{width:100%;max-width:816px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);border-radius:6px;padding:40px 44px;font-size:12.5px;line-height:1.45;color:var(--ink)}
+.op-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+.op-top .brand{font-size:15px}
+.op-top .brand .mark{width:26px;height:26px;font-size:16px}
+.op-top .r{text-align:right;font-size:11.5px;color:var(--muted)}
+.op-h1{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:16px 0 6px}
+.op-dek{font-size:13.5px;color:var(--ink2);max-width:640px}
+.op-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px 26px;margin-top:16px}
+.op-cols h4{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--amber-d);margin-bottom:5px}
+.op-cols ul{list-style:none;display:grid;gap:3px}
+.op-cols li{padding-left:12px;position:relative}
+.op-cols li::before{content:"";position:absolute;left:0;top:7px;width:5px;height:5px;border-radius:1px;background:var(--amber)}
+.op-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:16px}
+.op-flow div{border:1px solid var(--line);border-radius:6px;padding:7px 8px;background:var(--bg);font-size:11px}
+.op-flow b{display:block;font-size:11.5px}
+.op-aud{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.op-aud div{border:1px solid var(--line);border-radius:6px;padding:10px}
+.op-aud b{display:block;font-size:12.5px;margin-bottom:3px}
+.op-aud span{color:var(--ink2);font-size:11.5px}
+.op-proof{margin-top:16px;background:var(--dark);color:#fff;border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.op-proof b{font-size:14px}
+.op-proof span{color:#c4c3c9;font-size:12px}
+.op-foot{margin-top:14px;display:flex;justify-content:space-between;gap:12px;font-size:12px;border-top:1px solid var(--line);padding-top:10px;color:var(--ink2)}
+@media (max-width:700px){
+  .onepager{padding:22px 18px}
+  .op-cols,.op-aud{grid-template-columns:1fr}
+  .op-flow{grid-template-columns:1fr 1fr}
+  .op-proof,.op-foot{flex-direction:column;align-items:flex-start}
+}
+
+/* print: the one-pager only, on one letter page */
+@media print{
+  @page{size:letter;margin:0.45in}
+  html,body{background:#fff}
+  body > *:not(#one-pager){display:none !important}
+  #one-pager{padding:0 !important;background:#fff}
+  #one-pager .sec-head,#one-pager .op-actions{display:none !important}
+  #one-pager .wrap{max-width:none;padding:0}
+  .onepager{border:0;box-shadow:none;padding:0;max-width:none;border-radius:0;font-size:14.5px;line-height:1.5}
+  .op-top{padding-bottom:18px}
+  .op-h1{font-size:34px;margin:26px 0 12px}
+  .op-dek{font-size:16px;max-width:none}
+  .op-cols{margin-top:26px;gap:22px 32px}
+  .op-cols h4{font-size:12px;margin-bottom:8px}
+  .op-cols ul{gap:6px}
+  .op-flow{margin-top:8px !important;gap:8px}
+  .op-flow div{padding:10px;font-size:12.5px}
+  .op-flow b{font-size:13.5px}
+  .op-aud{margin-top:22px;gap:12px}
+  .op-aud div{padding:14px}
+  .op-aud b{font-size:14.5px}
+  .op-aud span{font-size:13px}
+  .op-proof{margin-top:24px;padding:18px 20px}
+  .op-proof b{font-size:16px}
+  .op-proof span{font-size:13.5px}
+  .op-foot{margin-top:20px;font-size:13.5px;padding-top:14px}
+  .op-journey-h{margin-top:26px !important;font-size:12px !important}
+  .op-cols,.op-aud{grid-template-columns:repeat(var(--cols,2),1fr)}
+  .op-aud{--cols:3}
+  .op-flow{grid-template-columns:repeat(5,1fr)}
+  .op-proof,.op-foot{flex-direction:row;align-items:center}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important;scroll-behavior:auto !important}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="mark">P</span>PoolRoute Ops <small>Commercial &amp; Multifamily</small></a>
+    <nav class="nav-links">
+      <a href="#monitoring">Monitoring</a>
+      <a href="#journey">How it works</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#integrations">Integrations</a>
+      <a href="#pricing">Pricing</a>
+    </nav>
+    <a class="btn btn-primary" href="#contact">Book a call</a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- 1. HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="tag">For property owners, HOAs and commercial operators</span>
+      <h1>Every commercial pool, monitored and serviced from one dashboard.</h1>
+      <p class="lead">A lab-grade free-chlorine reading at every pool, logged for the health department automatically, with every service visit, photo and invoice in the same place.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="#contact">Book a call</a>
+        <a class="btn btn-ghost" href="#monitoring">See the demo
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg></a>
+      </div>
+      <p class="fine">DPD monitoring over LTE. No Wi-Fi, no hub. Live in minutes per pool.</p>
+    </div>
+    <div class="hero-board" aria-label="Sample portfolio summary">
+      <div class="hb-top"><b>Portfolio · today</b><span class="sample">Sample data</span></div>
+      <div class="hb-stats">
+        <div class="hb-stat"><div class="n" id="hbG">14</div><div class="l">In range</div></div>
+        <div class="hb-stat"><div class="n" style="color:#facc15" id="hbY">3</div><div class="l">Watch</div></div>
+        <div class="hb-stat"><div class="n" style="color:#f87171" id="hbR">1</div><div class="l">Action</div></div>
+      </div>
+      <div id="hbRows"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. PROBLEM -->
+<section class="problem">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag">The problem</span>
+      <h2>The pool is the one amenity nobody can see.</h2>
+      <p class="lead">Commercial and HOA pools have to keep a daily chemistry log for the health department. On most properties that log is still a clipboard.</p>
+    </div>
+    <div class="prob-grid">
+      <div class="prob"><span class="k">01 · Manual logs</span><h3>The log lives on a clipboard</h3><p>Readings are written by hand, often from memory, and filed where an inspector finds them before the manager does.</p></div>
+      <div class="prob"><span class="k">02 · Inconsistent testing</span><h3>Every tech tests a little differently</h3><p>Strip colors, kit technique and time of day change the number. A pool can drift out of range between visits and nobody knows.</p></div>
+      <div class="prob"><span class="k">03 · No visibility</span><h3>The manager hears about it last</h3><p>A closed pool, a resident complaint or a failed inspection is usually the first signal. There is no live view across properties.</p></div>
+    </div>
+    <div class="coverage">
+      <span class="lbl">Your smart-building stack today:</span>
+      <span class="chip ok">Door locks</span><span class="chip ok">Thermostats</span><span class="chip ok">Gates &amp; access</span><span class="chip ok">Leak sensors</span><span class="chip gap">The pool</span>
+    </div>
+  </div>
+</section>
+
+<!-- 3. DPD MONITORING -->
+<section id="monitoring">
+  <div class="wrap dpd-grid">
+    <div>
+      <span class="tag">DPD monitoring</span>
+      <h2 style="margin:10px 0 14px">A true free-chlorine reading, not an estimate.</h2>
+      <p class="lead">The monitor measures free chlorine with the DPD method, the same chemistry as the test kit an inspector uses. ORP controllers infer chlorine from voltage, and that number drifts with pH and stabilizer.</p>
+      <ul class="feat-list" style="margin-top:26px">
+        <li><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v6L4.5 18.5A2 2 0 0 0 6.2 21.5h11.6a2 2 0 0 0 1.7-3L14 9V3"/></svg></span><div><b>Lab chemistry, on the pool</b><span>Free chlorine and pH on a schedule you set, as often as every 15 minutes.</span></div></li>
+        <li><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 4v16"/></svg></span><div><b>LTE built in</b><span>No Wi-Fi password, no hub, nothing on the property network. Enter the device's 10-digit ID and it goes live.</span></div></li>
+        <li><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13h6M9 17h4"/></svg></span><div><b>Automatic health-department logs</b><span>Every reading is written to the daily log with a timestamp. Print it or export it for an inspection.</span></div></li>
+        <li><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span><div><b>Alerts and dosing recommendations</b><span>Out-of-range readings alert the manager and the on-call tech, with the exact dose to bring the pool back.</span></div></li>
+      </ul>
+      <div class="vs" role="table" aria-label="DPD compared with ORP">
+        <div class="h us" role="columnheader">DPD (PoolRoute Ops)</div><div class="h" role="columnheader">ORP controller</div>
+        <div class="row" role="cell">Measures free chlorine in ppm</div><div class="row" role="cell">Infers it from millivolts</div>
+        <div class="row" role="cell">Matches the inspector's kit</div><div class="row" role="cell">Drifts with pH and CYA</div>
+        <div class="row last" role="cell">Reading goes straight to the log</div><div class="row last" role="cell">Someone still tests by hand</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="live" aria-live="polite">
+        <div class="live-head">
+          <div><div class="site">Lakeview Commons · Main pool</div><div class="meta">Device 4815 1623 42 · 62,000 gal</div></div>
+          <span class="lte"><span class="bars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:10px"></i><i style="height:12px"></i></span>LTE</span>
+        </div>
+        <div class="live-body">
+          <div class="fc-row">
+            <div><div class="fc-l">Free chlorine (DPD)</div><div class="fc-v"><span id="fcVal">2.6</span><small>ppm</small></div></div>
+            <span class="status g" id="fcStatus"><span class="dot g"></span>In range</span>
+          </div>
+          <div class="mini">
+            <div><b id="phVal">7.5</b><span>pH</span></div>
+            <div><b id="tVal">82°F</b><span>Water temp</span></div>
+            <div><b id="agoVal">now</b><span>Last reading</span></div>
+          </div>
+          <svg class="spark" id="spark" viewBox="0 0 300 84" preserveAspectRatio="none" aria-label="Free chlorine, last 12 hours">
+            <rect x="0" y="22" width="300" height="44" fill="#e7f6ec"/>
+            <line x1="0" y1="66" x2="300" y2="66" stroke="#fca5a5" stroke-dasharray="3 3"/>
+            <path id="sparkArea" fill="rgb(245 158 11/.12)"/>
+            <path id="sparkLine" fill="none" stroke="#1c1c1e" stroke-width="2" stroke-linejoin="round"/>
+            <circle id="sparkDot" r="4" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+          </svg>
+          <div class="spark-cap"><span>12 h ago</span><span>Green band 1.5 to 5.0 ppm · red line 1.0 ppm</span><span>Now</span></div>
+        </div>
+        <div class="alert r" id="alertBox" role="status"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex:none;margin-top:2px"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/></svg><div><b id="alertTitle">Low chlorine</b><span id="alertText"></span></div></div>
+        <div class="log">
+          <div class="log-h"><span>Health-department log · today</span><span class="sample">Auto-logged</span></div>
+          <table><tbody id="logBody"></tbody></table>
+        </div>
+        <div class="live-foot"><span>Sample data. One reading every 15 min, sped up here.</span><span id="readCount">Reading 1</span></div>
+      </div>
+
+      <div class="activate">
+        <h3>Go live in one step</h3>
+        <p>Every monitor ships with a 10-digit ID on the housing. Type any 10 digits to try it.</p>
+        <form class="act-form" id="actForm" autocomplete="off">
+          <input id="actId" inputmode="numeric" maxlength="13" placeholder="0000 0000 00" aria-label="Device ID">
+          <button class="btn btn-amber" type="submit">Activate</button>
+        </form>
+        <div class="act-err" id="actErr"></div>
+        <ol class="act-steps" id="actSteps">
+          <li data-s="0"><i></i>Device found</li>
+          <li data-s="1"><i></i>LTE connected</li>
+          <li data-s="2"><i></i>Assigned to property and pool</li>
+          <li data-s="3"><i></i>First DPD reading logged</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. JOURNEY -->
+<section class="journey" id="journey">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag">The full journey</span>
+      <h2>One system from the pool store to the owner's report.</h2>
+      <p class="lead">The chemicals, the service visit, the reading and the invoice all share one record. Click each step.</p>
+    </div>
+    <div class="flow" id="flow" role="tablist" aria-label="Journey steps"></div>
+    <div class="panel" id="panel" role="tabpanel">
+      <div class="panel-txt" id="panelTxt"></div>
+      <div class="panel-viz" id="panelViz"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO MAP -->
+<section id="portfolio">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag">Commercial dashboard</span>
+      <h2>Your whole portfolio on one map.</h2>
+      <p class="lead">Green is in range, yellow needs watching, red needs someone today. Click a pool to see its readings, its last visit and who is responsible.</p>
+    </div>
+    <div class="map-grid">
+      <div class="map-card">
+        <div class="map-bar">
+          <div class="filters" id="filters">
+            <button class="on" data-f="all">All <span id="cAll"></span></button>
+            <button data-f="g"><span class="dot g"></span>In range <span id="cG"></span></button>
+            <button data-f="y"><span class="dot y"></span>Watch <span id="cY"></span></button>
+            <button data-f="r"><span class="dot r" style="animation:none"></span>Action <span id="cR"></span></button>
+          </div>
+          <span class="sample">Sample portfolio</span>
+        </div>
+        <svg class="map-svg" id="map" viewBox="0 0 800 480" role="group" aria-label="Map of sample properties">
+          <defs>
+            <pattern id="blocks" width="40" height="40" patternUnits="userSpaceOnUse"><rect width="40" height="40" fill="#eef2ee"/><rect x="3" y="3" width="34" height="34" rx="3" fill="#e4e9e3"/></pattern>
+          </defs>
+          <rect width="800" height="480" fill="url(#blocks)"/>
+          <path d="M560 0 C 590 70 640 110 700 130 S 800 170 800 170 V0 Z" fill="#cfe6f0"/>
+          <path d="M0 360 C 90 340 150 380 210 420 S 280 480 280 480 H0 Z" fill="#cfe6f0"/>
+          <path d="M330 210 q40 -30 90 -6 q30 24 -6 54 q-50 26 -84 -6 q-24 -20 0 -42z" fill="#d6ead2"/>
+          <g fill="none" stroke="#fff" stroke-linecap="round">
+            <path d="M0 140 L800 300" stroke-width="16"/>
+            <path d="M120 0 L260 480" stroke-width="16"/>
+            <path d="M0 250 C 200 230 420 170 800 60" stroke-width="10"/>
+            <path d="M470 480 L520 0" stroke-width="10"/>
+            <path d="M640 480 C 650 380 700 300 800 260" stroke-width="8"/>
+            <path d="M0 60 L400 120" stroke-width="6"/>
+          </g>
+          <g fill="none" stroke="#f6d79a" stroke-linecap="round">
+            <path d="M0 140 L800 300" stroke-width="5"/>
+            <path d="M120 0 L260 480" stroke-width="5"/>
+          </g>
+          <g id="pins"></g>
+        </svg>
+      </div>
+      <aside class="detail" id="detail" aria-live="polite"></aside>
+    </div>
+  </div>
+</section>
+
+<!-- 5. WHO IT'S FOR -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="tag">Who it's for</span>
+      <h2>Built for the people accountable for the pool.</h2>
+    </div>
+    <div class="aud-grid">
+      <article class="aud">
+        <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-5h6v5M9 10h.01M15 10h.01"/></svg></div>
+        <h3>Property owners &amp; HOAs</h3>
+        <p>For asset managers, regional property managers and HOA boards.</p>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>A portfolio view of every pool, by region and property</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Inspection-ready compliance logs for each pool, every day</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Vendor accountability: GPS-verified visits, photos and readings for every stop</span></li>
+        </ul>
+      </article>
+      <article class="aud">
+        <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h3l3-8 4 16 3-8h7"/></svg></div>
+        <h3>Commercial operators</h3>
+        <p>For hotels, clubs, fitness centers and aquatic facilities.</p>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Daily DPD readings without sending a person to test</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Alerts before a pool drifts out of range, with the dose to fix it</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Fewer site visits: send a tech when the data says so</span></li>
+        </ul>
+      </article>
+      <article class="aud">
+        <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h18M5 9V20h14V9M3 9l2-5h14l2 5M10 20v-6h4v6"/></svg></div>
+        <h3>Franchise pool companies</h3>
+        <p>For franchisors and multi-location service brands.</p>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>A white-label platform under your brand, in the app and every customer email</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Franchise-specific workflows, service tiers and checklists</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>The franchisor's view across every location and territory</span></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 6. INTEGRATIONS -->
+<section class="integ" id="integrations">
+  <div class="wrap int-grid">
+    <div>
+      <div class="sec-head" style="margin-bottom:26px">
+        <span class="tag">Integrations</span>
+        <h2>We plug into your stack. We don't replace it.</h2>
+        <p class="lead">Readings, alerts and service visits are available over an open API and webhooks, so the pool shows up in the platform your team already uses.</p>
+      </div>
+      <div class="int-list">
+        <div class="int-item"><b>Property-management systems</b><span>Push compliance logs and service visits into the property record.</span></div>
+        <div class="int-item"><b>Access-control and smart-building platforms</b><span>Put the pool next to the locks and thermostats. Close the gate automatically when chlorine falls below the limit.</span></div>
+        <div class="int-item"><b>Pool-service platforms</b><span>Keep your current route software and send our readings into it.</span></div>
+      </div>
+      <div class="stack"><span>REST API</span><span>Signed webhooks</span><span>CSV and PDF export</span><span>QuickBooks Online</span><span>SSO on request</span></div>
+    </div>
+    <div class="code">
+      <div class="code-h"><span>POST https://your-platform.example/webhooks/pool</span><span class="sample">Sample payload</span></div>
+<pre><span class="c">// fired on every reading and every alert</span>
+{
+  <span class="k">"event"</span>: <span class="s">"reading.out_of_range"</span>,
+  <span class="k">"device_id"</span>: <span class="s">"4815162342"</span>,
+  <span class="k">"property"</span>: { <span class="k">"id"</span>: <span class="s">"prop_0192"</span>, <span class="k">"name"</span>: <span class="s">"Lakeview Commons"</span> },
+  <span class="k">"pool"</span>: <span class="s">"Main pool"</span>,
+  <span class="k">"measured_at"</span>: <span class="s">"2026-11-04T14:15:00Z"</span>,
+  <span class="k">"free_chlorine_ppm"</span>: <span class="n">0.8</span>,
+  <span class="k">"method"</span>: <span class="s">"DPD"</span>,
+  <span class="k">"ph"</span>: <span class="n">7.6</span>,
+  <span class="k">"status"</span>: <span class="s">"action"</span>,
+  <span class="k">"recommendation"</span>: {
+    <span class="k">"product"</span>: <span class="s">"Liquid chlorine 12.5%"</span>,
+    <span class="k">"amount_gal"</span>: <span class="n">1.1</span>
+  },
+  <span class="k">"log_url"</span>: <span class="s">"https://app.poolrouteops.com/logs/…"</span>
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- 7. PROOF -->
+<section>
+  <div class="wrap">
+    <div class="proof-card">
+      <div>
+        <span class="tag">Proof</span>
+        <p class="big" style="margin-top:12px">Built and run on our own <em>50 commercial properties</em> at Poolify.</p>
+        <p class="sub" style="margin-top:14px">We operate pools ourselves. Every screen on this page is used by our own techs and office before a customer sees it.</p>
+      </div>
+      <div class="switch">
+        <b>Switching from PoolBrain or Skimmer?</b>
+        <p>We'll have you live in 24 hours.</p>
+        <ol>
+          <li>Send us your export, or give us read access.</li>
+          <li>We map customers, pools, routes and plans.</li>
+          <li>Your techs log in the next morning.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. PRICING -->
+<section id="pricing" style="padding-top:0">
+  <div class="wrap">
+    <div class="price">
+      <div>
+        <span class="tag">Pricing</span>
+        <h3 style="margin-top:8px">Pilot pricing available. Contact us.</h3>
+        <p>Pricing depends on the number of pools and whether you want monitoring, service software or both.</p>
+      </div>
+      <a class="btn btn-primary" href="#contact">Ask about the pilot</a>
+    </div>
+  </div>
+</section>
+
+<!-- 9. CTA -->
+<section id="contact" style="padding-top:0">
+  <div class="wrap">
+    <div class="cta">
+      <h2>See your portfolio on the dashboard.</h2>
+      <p>A 30-minute call. Bring a list of properties and we'll show you what the first month looks like.</p>
+      <div class="ctas">
+        <a class="btn btn-amber" href="mailto:hello@poolrouteops.com?subject=Commercial%20pools%3A%20book%20a%20call">Book a call</a>
+        <a class="btn btn-ghost" href="mailto:hello@poolrouteops.com">hello@poolrouteops.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ONE-PAGER -->
+<section id="one-pager" style="padding-top:0">
+  <div class="wrap op-wrap">
+    <div class="sec-head" style="text-align:center;margin:0 auto 4px">
+      <span class="tag">One-pager</span>
+      <h2 style="margin-top:8px">Take it to your next meeting.</h2>
+    </div>
+    <div class="op-actions">
+      <a class="btn btn-primary" href="PoolRouteOps-commercial-one-pager.pdf" download>Download the PDF</a>
+      <button class="btn btn-ghost" type="button" id="printBtn">Print</button>
+    </div>
+    <article class="onepager">
+      <div class="op-top">
+        <span class="brand"><span class="mark">P</span>PoolRoute Ops</span>
+        <div class="r">Commercial &amp; Multifamily<br>hello@poolrouteops.com</div>
+      </div>
+      <h1 class="op-h1">Every commercial pool, monitored and serviced from one dashboard.</h1>
+      <p class="op-dek">Commercial and HOA pools need a daily chemistry log for the health department. Today it is kept by hand, testing varies by tech, and the property manager cannot see any of it. Smart-building platforms cover locks, thermostats and gates, but not the pool.</p>
+      <div class="op-cols">
+        <div>
+          <h4>DPD monitoring</h4>
+          <ul>
+            <li>True free chlorine by the DPD method, the inspector's chemistry, not an ORP estimate</li>
+            <li>LTE built in: no Wi-Fi, no hub. Enter the 10-digit device ID to go live</li>
+            <li>Automatic health-department logs, alerts and dosing recommendations</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Integrations</h4>
+          <ul>
+            <li>Open API and signed webhooks for every reading and alert</li>
+            <li>Feeds property-management, access-control and pool-service platforms</li>
+            <li>We plug into your stack. We don't replace it.</li>
+          </ul>
+        </div>
+      </div>
+      <h4 class="op-journey-h" style="font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--amber-d);margin-top:16px">The full journey</h4>
+      <div class="op-flow" style="margin-top:6px">
+        <div><b>Pool store</b>Chemicals stocked and sold</div>
+        <div><b>Counter POS</b>Water test to products to checkout</div>
+        <div><b>Field tech app</b>Route, readings, photos</div>
+        <div><b>Commercial dashboard</b>Every pool, live</div>
+        <div><b>Office</b>Billing and reporting</div>
+      </div>
+      <div class="op-aud">
+        <div><b>Property owners &amp; HOAs</b><span>Portfolio view of every pool, compliance logs, vendor accountability.</span></div>
+        <div><b>Commercial operators</b><span>Daily DPD readings, alerts, fewer site visits.</span></div>
+        <div><b>Franchise pool companies</b><span>White-label platform, franchise workflows and branding, franchisor view across locations.</span></div>
+      </div>
+      <div class="op-proof">
+        <div><b>Built and run on our own 50 commercial properties at Poolify.</b><br><span>Switching from PoolBrain or Skimmer? We'll have you live in 24 hours.</span></div>
+        <span style="white-space:nowrap;color:var(--amber);font-weight:700">Pilot pricing available</span>
+      </div>
+      <div class="op-foot"><span><b>Book a call:</b> hello@poolrouteops.com</span><span>PoolRoute Ops by Poolify</span></div>
+    </article>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="brand"><span class="mark">P</span>PoolRoute Ops</span>
+    <span>Readings, maps and properties on this page are sample data.</span>
+    <a href="mailto:hello@poolrouteops.com">hello@poolrouteops.com</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- sample portfolio (fictional) ---------- */
+var SITES = [
+ {n:"Lakeview Commons",t:"Multifamily · 312 units",p:"Main pool",x:185,y:120,fc:2.6,ph:7.5,s:"g",v:"Today 7:40a",tech:"Route 3"},
+ {n:"Harbor Point Apartments",t:"Multifamily · 240 units",p:"Resort pool",x:610,y:190,fc:0.7,ph:7.9,s:"r",v:"Yesterday 2:10p",tech:"Route 1",note:"Chlorine below 1.0 ppm for 40 min. Tech dispatched, ETA 35 min. Recommended dose: 1.4 gal of 12.5% liquid chlorine."},
+ {n:"Cedar Ridge HOA",t:"HOA · 2 pools",p:"Lap pool",x:300,y:330,fc:1.3,ph:7.7,s:"y",v:"Today 9:05a",tech:"Route 2",note:"Trending down since noon. Watch until the next reading."},
+ {n:"The Meridian",t:"Multifamily · 188 units",p:"Rooftop pool",x:430,y:120,fc:3.1,ph:7.4,s:"g",v:"Today 8:20a",tech:"Route 1"},
+ {n:"Oak Hollow Townhomes",t:"HOA · 1 pool",p:"Community pool",x:90,y:240,fc:2.2,ph:7.6,s:"g",v:"Today 10:15a",tech:"Route 3"},
+ {n:"Riverside Lofts",t:"Multifamily · 156 units",p:"Courtyard pool",x:540,y:380,fc:2.9,ph:7.5,s:"g",v:"Yesterday 4:40p",tech:"Route 4"},
+ {n:"Sunset Bay Club",t:"Swim club · 3 pools",p:"Competition pool",x:700,y:330,fc:5.6,ph:7.3,s:"y",v:"Today 6:55a",tech:"Route 4",note:"Chlorine above 5.0 ppm after a shock. Expected to settle within 3 hours."},
+ {n:"Pinecrest Village",t:"HOA · 1 pool",p:"Community pool",x:360,y:420,fc:2.4,ph:7.6,s:"g",v:"Today 11:00a",tech:"Route 2"},
+ {n:"Northgate Residences",t:"Multifamily · 420 units",p:"Main pool",x:330,y:60,fc:3.4,ph:7.5,s:"g",v:"Today 7:10a",tech:"Route 1"},
+ {n:"Willow Creek Estates",t:"HOA · 2 pools",p:"Kiddie pool",x:250,y:220,fc:1.4,ph:7.8,s:"y",v:"Today 9:50a",tech:"Route 3",note:"pH 7.8 with chlorine near the low end. Acid and chlorine recommended on next visit."},
+ {n:"Bayfront Tower",t:"Multifamily · 210 units",p:"Spa",x:660,y:80,fc:3.8,ph:7.4,s:"g",v:"Today 8:45a",tech:"Route 1"},
+ {n:"Magnolia Park",t:"Multifamily · 175 units",p:"Main pool",x:470,y:280,fc:2.7,ph:7.5,s:"g",v:"Today 12:20p",tech:"Route 2"},
+ {n:"Stonebridge HOA",t:"HOA · 1 pool",p:"Community pool",x:150,y:400,fc:2.0,ph:7.6,s:"g",v:"Yesterday 3:30p",tech:"Route 3"},
+ {n:"Elm Street Flats",t:"Multifamily · 96 units",p:"Courtyard pool",x:590,y:300,fc:3.0,ph:7.4,s:"g",v:"Today 10:40a",tech:"Route 4"},
+ {n:"Copper Canyon Club",t:"Fitness club · 1 pool",p:"Indoor pool",x:760,y:420,fc:2.5,ph:7.5,s:"g",v:"Today 6:30a",tech:"Route 4"},
+ {n:"Heritage Square",t:"Multifamily · 260 units",p:"Main pool",x:400,y:240,fc:3.3,ph:7.5,s:"g",v:"Today 9:30a",tech:"Route 2"},
+ {n:"Brookside Commons",t:"HOA · 1 pool",p:"Community pool",x:60,y:110,fc:2.8,ph:7.5,s:"g",v:"Today 8:05a",tech:"Route 3"},
+ {n:"Seaview Gardens",t:"Multifamily · 140 units",p:"Main pool",x:520,y:60,fc:2.3,ph:7.6,s:"g",v:"Today 11:35a",tech:"Route 1"}
+];
+var COL={g:"#16a34a",y:"#eab308",r:"#dc2626"}, LBL={g:"In range",y:"Watch",r:"Action"};
+
+/* hero rows */
+(function(){
+  var order={r:0,y:1,g:2}, rows=SITES.slice().sort(function(a,b){return order[a.s]-order[b.s]}).slice(0,5);
+  document.getElementById('hbRows').innerHTML = rows.map(function(s){
+    return '<div class="hb-row"><span class="dot '+s.s+'"></span><span class="nm">'+s.n+'</span><span class="v">'+s.fc.toFixed(1)+' ppm</span></div>';
+  }).join('');
+  var c={g:0,y:0,r:0}; SITES.forEach(function(s){c[s.s]++});
+  document.getElementById('hbG').textContent=c.g; document.getElementById('hbY').textContent=c.y; document.getElementById('hbR').textContent=c.r;
+})();
+
+/* ---------- live DPD card ---------- */
+var GAL=62000, hist=[], n=0, fc=2.6, ph=7.5, temp=82, phase="normal", logRows=[], t0=new Date();
+t0.setHours(14,15,0,0);
+for(var i=0;i<47;i++){ hist.push(2.3+Math.sin(i/6)*.45+Math.random()*.15); }
+hist.push(fc);
+function clock(k){ var d=new Date(t0.getTime()+k*15*60000); var h=d.getHours(),m=d.getMinutes(); var ap=h>=12?'p':'a'; h=h%12||12; return h+':'+(m<10?'0':'')+m+ap; }
+function statusOf(v){ return v<1.0?'r':(v<1.5||v>5)?'y':'g'; }
+function dose(from,to){ return Math.max(0,(to-from)*(GAL/10000)*10.7/128); }
+function drawSpark(){
+  var W=300,H=84,lo=0,hi=6, pts=hist.map(function(v,i){return [i*(W/(hist.length-1)), H-(Math.min(hi,Math.max(lo,v))-lo)/(hi-lo)*H];});
+  var d=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)}).join(' ');
+  document.getElementById('sparkLine').setAttribute('d',d);
+  document.getElementById('sparkArea').setAttribute('d',d+' L'+W+' '+H+' L0 '+H+' Z');
+  var last=pts[pts.length-1]; var dot=document.getElementById('sparkDot'); dot.setAttribute('cx',last[0]); dot.setAttribute('cy',last[1]);
+}
+function animateNum(el,from,to,dec){
+  if(reduce){el.textContent=to.toFixed(dec);return;}
+  var st=null; function f(ts){ if(!st)st=ts; var p=Math.min(1,(ts-st)/700); var e=1-Math.pow(1-p,3); el.textContent=(from+(to-from)*e).toFixed(dec); if(p<1)requestAnimationFrame(f);} requestAnimationFrame(f);
+}
+function addLog(v,p,note){
+  logRows.unshift({t:clock(n),fc:v,ph:p,note:note});
+  logRows=logRows.slice(0,5);
+  document.getElementById('logBody').innerHTML=logRows.map(function(r,i){
+    return '<tr'+(i===0?' class="new"':'')+'><td>'+r.t+'</td><td><b>'+r.fc.toFixed(1)+'</b> ppm FC</td><td>pH '+r.ph.toFixed(1)+'</td><td>'+(r.note||'DPD')+'</td></tr>';
+  }).join('');
+}
+function render(prev){
+  var s=statusOf(fc), st=document.getElementById('fcStatus');
+  animateNum(document.getElementById('fcVal'),prev,fc,1);
+  st.className='status '+s; st.innerHTML='<span class="dot '+s+'"'+(s==='r'?'':'')+'></span>'+(s==='r'?'Low: action':s==='y'?(fc>5?'High: watch':'Low: watch'):'In range');
+  document.getElementById('phVal').textContent=ph.toFixed(1);
+  document.getElementById('tVal').textContent=Math.round(temp)+'°F';
+  document.getElementById('agoVal').textContent=clock(n);
+  document.getElementById('readCount').textContent='Reading '+(n+1);
+  var box=document.getElementById('alertBox');
+  if(s==='r'){
+    box.className='alert r show';
+    document.getElementById('alertTitle').textContent='Low chlorine: '+fc.toFixed(1)+' ppm';
+    document.getElementById('alertText').textContent=' Manager and on-call tech notified. Add '+dose(fc,3.0).toFixed(1)+' gal of 12.5% liquid chlorine to reach 3.0 ppm.';
+  } else if(phase==='recover'){
+    box.className='alert g show';
+    document.getElementById('alertTitle').textContent='Back in range';
+    document.getElementById('alertText').textContent=' Dose logged by the tech at '+clock(n-1)+'. Alert closed automatically.';
+  } else box.className='alert';
+  drawSpark();
+}
+function tick(){
+  var prev=fc; n++;
+  // scripted cycle: normal drift -> sun/swim load drop -> alert -> dosed -> recover
+  var c=n%14;
+  if(c<6){ phase='normal'; fc=Math.max(1.6,Math.min(3.6,fc+(Math.random()-.55)*.35)); }
+  else if(c<9){ phase='drop'; fc=Math.max(0.6,fc-(.45+Math.random()*.25)); }
+  else if(c===9){ phase='dosed'; fc=Math.max(0.6,fc-.1); }
+  else if(c===10){ phase='recover'; fc=2.4+Math.random()*.3; }
+  else { phase='normal'; fc=Math.max(1.8,Math.min(3.4,fc+(Math.random()-.5)*.3)); }
+  ph=Math.max(7.2,Math.min(7.8,ph+(Math.random()-.5)*.08));
+  temp=81+Math.random()*2;
+  hist.push(fc); if(hist.length>48)hist.shift();
+  addLog(fc,ph,c===10?'Dosed · DPD':(statusOf(fc)==='r'?'Alert':'DPD'));
+  render(prev);
+}
+addLog(fc,ph,'DPD'); render(fc);
+setInterval(tick, reduce?6000:3200);
+
+/* ---------- activation ---------- */
+var form=document.getElementById('actForm'), inp=document.getElementById('actId'), err=document.getElementById('actErr');
+inp.addEventListener('input',function(){
+  var d=inp.value.replace(/\D/g,'').slice(0,10);
+  inp.value=d.replace(/^(\d{4})(\d{0,4})(\d{0,2}).*/,function(_,a,b,c){return a+(b?' '+b:'')+(c?' '+c:'')}) ;
+  err.textContent='';
+});
+var running=false;
+form.addEventListener('submit',function(e){
+  e.preventDefault(); if(running)return;
+  var d=inp.value.replace(/\D/g,'');
+  if(d.length!==10){ err.textContent='Device IDs are 10 digits. You have '+d.length+'.'; return; }
+  running=true; var li=[].slice.call(document.querySelectorAll('#actSteps li'));
+  li.forEach(function(x){x.className='';x.querySelector('i').textContent='';});
+  var i=0; (function next(){
+    if(i>0){ li[i-1].className='done'; li[i-1].querySelector('i').textContent='✓'; }
+    if(i<li.length){ li[i].className='run'; i++; setTimeout(next,reduce?150:850); }
+    else { err.textContent=''; running=false; li[3].innerHTML='<i>✓</i>First DPD reading logged: 2.8 ppm. Device '+inp.value+' is live.'; li[3].className='done'; }
+  })();
+});
+
+/* ---------- journey ---------- */
+var STEPS=[
+ {k:"Pool store",s:"Where chemicals start",who:"Pool store",h:"Every chemical the pool uses is stocked, sold and tracked.",b:["Store inventory with a preloaded catalog of 10,000+ pool SKUs","Reorder points and distributor ordering","Every product sold ties back to a pool and a property"],hand:"Hands off to: Counter POS, at the register.",
+  viz:'<div class="mock"><div class="mock-h">Store inventory<span class="sample">Sample</span></div><div class="mock-b"><div class="mrow"><span>Liquid chlorine 12.5%, 4 gal</span><b>38 in stock</b></div><div class="mrow"><span>Muriatic acid, 2 gal</span><b>22 in stock</b></div><div class="mrow"><span>Stabilizer, 4 lb</span><b>9 · reorder</b></div><div class="mrow"><span>DPD reagent kit</span><b>14 in stock</b></div></div></div>'},
+ {k:"Counter POS",s:"Test, recommend, checkout",who:"Counter POS",h:"A water test becomes a cart in one step.",b:["Water test results generate recommended products and amounts","Recommendations drop straight into the checkout cart","Card, receipts by text or email, loyalty and QuickBooks sync"],hand:"Hands off to: the field tech, who doses what was sold.",
+  viz:'<div class="mock"><div class="mock-h">Water test → cart<span class="sample">Sample</span></div><div class="mock-b"><div class="mrow"><span>Free chlorine</span><b>0.9 ppm <span class="mtag y">Low</span></b></div><div class="mrow"><span>pH</span><b>7.9 <span class="mtag y">High</span></b></div><div class="mrow"><span>Liquid chlorine 12.5% × 2</span><b>$31.98</b></div><div class="mrow"><span>Muriatic acid × 1</span><b>$12.49</b></div><div class="mbtn">Checkout · $44.47</div></div></div>'},
+ {k:"Field tech app",s:"Route, readings, photos",who:"Field tech app",h:"The tech's day, on one phone.",b:["Optimized route with drive time and on-site time tracked by GPS","Readings, chemicals added and checklists for every stop","Before-and-after photos stamped with location and time"],hand:"Hands off to: the commercial dashboard, the moment the stop is done.",
+  viz:'<div class="mock"><div class="mock-h">Stop 4 of 11 · Lakeview Commons<span class="sample">Sample</span></div><div class="mock-b"><div class="mrow"><span>Arrived</span><b>9:42a · GPS verified</b></div><div class="mrow"><span>FC / pH</span><b>2.8 / 7.5</b></div><div class="mrow"><span>Added</span><b>1.0 gal liquid chlorine</b></div><div class="photos"><div></div><div></div><div></div></div><div class="mbtn">Complete stop</div></div></div>'},
+ {k:"Commercial dashboard",s:"Every pool, live",who:"Property manager",h:"The manager sees every pool without calling anyone.",b:["Live DPD readings and status for every pool in the portfolio","Daily compliance log, ready for the inspector","Every vendor visit with photos, readings and time on site"],hand:"Hands off to: the office, for billing and the owner's report.",
+  viz:'<div class="mock"><div class="mock-h">Portfolio · 18 pools<span class="sample">Sample</span></div><div class="mock-b"><div class="mrow"><span><span class="dot g" style="display:inline-block;margin-right:6px"></span>In range</span><b>14</b></div><div class="mrow"><span><span class="dot y" style="display:inline-block;margin-right:6px"></span>Watch</span><b>3</b></div><div class="mrow"><span><span class="dot r" style="display:inline-block;margin-right:6px;animation:none"></span>Action</span><b>1</b></div><div class="mrow"><span>Logs complete today</span><b>18 / 18</b></div></div></div>'},
+ {k:"Office",s:"Billing and reporting",who:"Office and owner",h:"Billing and reporting run themselves.",b:["Recurring plans and one-time work invoice automatically","Card and ACH on file, synced to QuickBooks Online","Monthly owner report: compliance, visits, chemical spend by property"],hand:"Back to the start: chemical spend feeds the next order at the store.",
+  viz:'<div class="mock"><div class="mock-h">October report · Cedar Ridge HOA<span class="sample">Sample</span></div><div class="mock-b"><div class="mrow"><span>Days logged</span><b>31 / 31</b></div><div class="mrow"><span>Readings out of range</span><b>3 · all resolved</b></div><div class="mrow"><span>Service visits</span><b>13</b></div><div class="mrow"><span>Invoice</span><b>Paid · ACH</b></div></div></div>'}
+];
+var flow=document.getElementById('flow');
+flow.innerHTML=STEPS.map(function(s,i){
+  return '<button class="step'+(i===0?' on':'')+'" role="tab" aria-selected="'+(i===0)+'" data-i="'+i+'"><div class="box"><span class="num">0'+(i+1)+'</span><b>'+s.k+'</b><span>'+s.s+'</span></div></button>';
+}).join('');
+function showStep(i){
+  var s=STEPS[i];
+  [].forEach.call(flow.children,function(b,j){b.classList.toggle('on',j===i);b.setAttribute('aria-selected',j===i);});
+  document.getElementById('panelTxt').innerHTML='<div class="who">Step '+(i+1)+' · '+s.who+'</div><h3>'+s.h+'</h3><ul>'+s.b.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul><div class="hand">'+s.hand+'</div>';
+  document.getElementById('panelViz').innerHTML=s.viz;
+}
+flow.addEventListener('click',function(e){var b=e.target.closest('.step'); if(b){showStep(+b.dataset.i); b.scrollIntoView({block:'nearest',inline:'nearest',behavior:reduce?'auto':'smooth'});}});
+flow.addEventListener('keydown',function(e){
+  var cur=[].indexOf.call(flow.children,document.activeElement); if(cur<0)return;
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault(); var nx=(cur+(e.key==='ArrowRight'?1:-1)+STEPS.length)%STEPS.length; flow.children[nx].focus(); showStep(nx);}
+});
+showStep(0);
+
+/* ---------- portfolio map ---------- */
+var pinsG=document.getElementById('pins'), sel=1, filt='all', NS='http://www.w3.org/2000/svg';
+function counts(){ var c={g:0,y:0,r:0}; SITES.forEach(function(s){c[s.s]++}); document.getElementById('cAll').textContent=SITES.length; document.getElementById('cG').textContent=c.g; document.getElementById('cY').textContent=c.y; document.getElementById('cR').textContent=c.r; }
+function drawPins(){
+  pinsG.innerHTML='';
+  SITES.forEach(function(s,i){
+    var g=document.createElementNS(NS,'g'); g.setAttribute('class','pin'+(filt!=='all'&&s.s!==filt?' dim':'')+(i===sel?' sel':'')); g.setAttribute('tabindex','0'); g.setAttribute('role','button'); g.setAttribute('aria-label',s.n+', '+LBL[s.s]+', '+s.fc.toFixed(1)+' ppm');
+    g.setAttribute('transform','translate('+s.x+' '+s.y+')');
+    var h='';
+    if(s.s==='r') h+='<circle class="ring-r" r="11" fill="'+COL.r+'"/>';
+    h+='<circle r="22" fill="transparent"/><circle class="ring" r="16"/><circle class="c" r="11" fill="'+COL[s.s]+'"/>';
+    g.innerHTML=h;
+    g.addEventListener('click',function(){sel=i;drawPins();showSite();});
+    g.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();sel=i;drawPins();showSite();pinsG.children[i].focus();}});
+    pinsG.appendChild(g);
+  });
+}
+function showSite(){
+  var s=SITES[sel], st=s.s;
+  var hist=[s.fc+0.4,s.fc+0.2,s.fc+0.1,s.fc].map(function(v){return Math.max(.3,v)});
+  document.getElementById('detail').innerHTML=
+   '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><div class="nm">'+s.n+'</div><div class="ty">'+s.t+' · '+s.p+'</div></div><span class="status '+st+'"><span class="dot '+st+'" style="animation:none"></span>'+LBL[st]+'</span></div>'+
+   '<div class="det-grid"><div><b>'+s.fc.toFixed(1)+'</b><span>Free chlorine, ppm (DPD)</span></div><div><b>'+s.ph.toFixed(1)+'</b><span>pH</span></div><div><b>'+(st==='r'?'2 of 3':'3 of 3')+'</b><span>Readings in range today</span></div><div><b>'+s.tech+'</b><span>Assigned route</span></div></div>'+
+   (s.note?'<div class="det-note">'+s.note+'</div>':'<div class="det-note">In range all day. Next service visit scheduled for tomorrow morning.</div>')+
+   '<ul class="det-list"><li><span>Last service visit</span><span>'+s.v+'</span></li><li><span>Today\'s compliance log</span><span>Complete · auto-logged</span></li><li><span>Photos on last visit</span><span>4 · GPS verified</span></li></ul>'+
+   '<span class="sample" style="align-self:flex-start">Sample property</span>';
+}
+document.getElementById('filters').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b)return; filt=b.dataset.f;
+  [].forEach.call(this.children,function(x){x.classList.toggle('on',x===b)});
+  if(filt!=='all'&&SITES[sel].s!==filt){ for(var i=0;i<SITES.length;i++){ if(SITES[i].s===filt){sel=i;break;} } }
+  drawPins(); showSite();
+});
+counts(); drawPins(); showSite();
+
+document.getElementById('printBtn').addEventListener('click',function(){window.print();});
+})();
+</script>
+</body>
+</html>
